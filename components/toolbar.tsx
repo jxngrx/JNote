@@ -154,7 +154,10 @@ export default function Toolbar() {
       </button>
 
       <button
-        onClick={() => clearAll() && handleResetView()}
+        onClick={() => {
+          clearAll();
+          handleResetView();
+        }}
         className="toolbar-icon-btn hover:bg-red-500/20"
         title="Clear all notes"
         aria-label="Clear all notes"
