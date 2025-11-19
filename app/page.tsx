@@ -4,10 +4,12 @@ import { useEffect, useState } from 'react';
 import { useCanvasStore } from '@/lib/store';
 import { useAppStore } from '@/lib/app-store';
 import { usePagesStore } from '@/lib/pages-store';
+import { useAreaStore } from '@/lib/area-store';
 import Canvas from '@/components/canvas';
 import Toolbar from '@/components/toolbar';
 import Sidebar from '@/components/sidebar';
 import PagesMode from '@/components/pages-mode';
+import AreaMode from '@/components/area-mode';
 
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
@@ -16,13 +18,15 @@ export default function Home() {
   const loadAppMode = useAppStore((state) => state.loadFromStorage);
   const loadFromStorage = useCanvasStore((state) => state.loadFromStorage);
   const loadPagesFromStorage = usePagesStore((state) => state.loadFromStorage);
+  const loadAreaFromStorage = useAreaStore((state) => state.loadFromStorage);
 
   useEffect(() => {
     setIsClient(true);
     loadAppMode();
     loadFromStorage();
     loadPagesFromStorage();
-  }, [loadAppMode, loadFromStorage, loadPagesFromStorage]);
+    loadAreaFromStorage();
+  }, [loadAppMode, loadFromStorage, loadPagesFromStorage, loadAreaFromStorage]);
 
   // Keyboard shortcuts for mode switching
   useEffect(() => {
@@ -48,13 +52,27 @@ export default function Home() {
         setMode('pages');
       }
 
-      // Ctrl+N for new page (only in Pages mode)
-      if ((e.ctrlKey || e.metaKey) && e.key === 'n' && mode === 'pages') {
+      // Super+Shift+A for Area
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'A') {
         e.preventDefault();
-        const createPage = usePagesStore.getState().createPage;
-        const setActivePage = usePagesStore.getState().setActivePage;
-        const newId = createPage();
-        setActivePage(newId);
+        setMode('area');
+      }
+
+      // Ctrl+N for new page/scene
+      if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+        if (mode === 'pages') {
+          e.preventDefault();
+          const createPage = usePagesStore.getState().createPage;
+          const setActivePage = usePagesStore.getState().setActivePage;
+          const newId = createPage();
+          setActivePage(newId);
+        } else if (mode === 'area') {
+          e.preventDefault();
+          const createScene = useAreaStore.getState().createScene;
+          const setActiveScene = useAreaStore.getState().setActiveScene;
+          const newId = createScene();
+          setActiveScene(newId);
+        }
       }
     };
 
@@ -69,14 +87,16 @@ export default function Home() {
   return (
     <div className="app-container">
       <Sidebar />
-      <main className={`content-area ${mode === 'pages' ? 'pages-mode' : 'sticky-notes-mode'}`}>
+      <main className={`content-area ${mode === 'pages' ? 'pages-mode' : mode === 'area' ? 'area-mode' : 'sticky-notes-mode'}`}>
         {mode === 'sticky-notes' ? (
           <>
             <Canvas />
             <Toolbar />
           </>
-        ) : (
+        ) : mode === 'pages' ? (
           <PagesMode />
+        ) : (
+          <AreaMode />
         )}
       </main>
     </div>

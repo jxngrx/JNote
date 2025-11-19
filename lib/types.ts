@@ -56,7 +56,7 @@ export interface CanvasStore extends CanvasState {
 }
 
 // Pages Mode Types
-export type AppMode = 'sticky-notes' | 'pages';
+export type AppMode = 'sticky-notes' | 'pages' | 'area';
 
 export interface Page {
   id: string;
@@ -88,6 +88,33 @@ export interface AppState {
 
 export interface AppStore extends AppState {
   setMode: (mode: AppMode) => void;
+  loadFromStorage: () => void;
+  saveToStorage: () => void;
+}
+
+// Area Mode Types
+export interface SceneData {
+  imageData: string | null; // Base64 image data
+}
+
+export interface Scene {
+  id: string;
+  title: string;
+  data: SceneData;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export interface AreaState {
+  scenes: Scene[];
+  activeSceneId: string | null;
+}
+
+export interface AreaStore extends AreaState {
+  createScene: () => string;
+  updateScene: (id: string, updates: Partial<Scene>) => void;
+  deleteScene: (id: string) => void;
+  setActiveScene: (id: string | null) => void;
   loadFromStorage: () => void;
   saveToStorage: () => void;
 }

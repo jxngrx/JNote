@@ -2,11 +2,13 @@
 
 import { useAppStore } from '@/lib/app-store';
 import { usePagesStore } from '@/lib/pages-store';
+import { useAreaStore } from '@/lib/area-store';
 import { useCanvasStore } from '@/lib/store';
 import { AppMode } from '@/lib/types';
 import {
   StickyNote,
   FileText,
+  PenTool,
   Plus,
   Settings,
   Keyboard,
@@ -28,6 +30,11 @@ export default function Sidebar() {
   const createPage = usePagesStore((state) => state.createPage);
   const setActivePage = usePagesStore((state) => state.setActivePage);
   const deletePage = usePagesStore((state) => state.deletePage);
+  const scenes = useAreaStore((state) => state.scenes);
+  const activeSceneId = useAreaStore((state) => state.activeSceneId);
+  const createScene = useAreaStore((state) => state.createScene);
+  const setActiveScene = useAreaStore((state) => state.setActiveScene);
+  const deleteScene = useAreaStore((state) => state.deleteScene);
   const clearAllNotes = useCanvasStore((state) => state.clearAll);
   const exportNotes = useCanvasStore((state) => state.exportJSON);
 
@@ -45,10 +52,25 @@ export default function Sidebar() {
       exportedAt: Date.now(),
     });
   };
+
+  const handleClearAllScenes = () => {
+    const deleteScene = useAreaStore.getState().deleteScene;
+    const scenes = useAreaStore.getState().scenes;
+    scenes.forEach(scene => deleteScene(scene.id));
+  };
+
+  const handleExportScenes = () => {
+    const state = useAreaStore.getState();
+    return JSON.stringify({
+      scenes: state.scenes,
+      activeSceneId: state.activeSceneId,
+      exportedAt: Date.now(),
+    });
+  };
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [isExpanded, setIsExpanded] = useState(true);
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['pages']));
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['pages', 'area']));
 
   const handleModeSwitch = (newMode: AppMode) => {
     setMode(newMode);
@@ -74,6 +96,29 @@ export default function Sidebar() {
     const pageToDelete = pages.find(p => p.id === pageId);
     if (pageToDelete && window.confirm(`Are you sure you want to delete "${pageToDelete.title}"?`)) {
       deletePage(pageId);
+    }
+  };
+
+  const handleCreateScene = () => {
+    const newId = createScene();
+    setActiveScene(newId);
+  };
+
+  const handleSceneClick = (sceneId: string) => {
+    setActiveScene(sceneId);
+  };
+
+  const handleDeleteScene = (e: React.MouseEvent, sceneId: string) => {
+    e.stopPropagation();
+
+    if (scenes.length <= 1) {
+      alert('Cannot delete the last scene. Create a new scene first.');
+      return;
+    }
+
+    const sceneToDelete = scenes.find(s => s.id === sceneId);
+    if (sceneToDelete && window.confirm(`Are you sure you want to delete "${sceneToDelete.title}"?`)) {
+      deleteScene(sceneId);
     }
   };
 
@@ -128,34 +173,36 @@ export default function Sidebar() {
 
         {/* Pages Mode */}
         <div className="nav-section">
-          <button
-            onClick={() => {
-              handleModeSwitch('pages');
-              if (!expandedSections.has('pages')) {
-                toggleSection('pages');
-              }
-            }}
+          <div
             className={`nav-item ${mode === 'pages' ? 'active' : ''}`}
             title={!isExpanded ? 'Pages' : ''}
           >
-            <div className="nav-icon-wrapper">
-              <FileText size={20} />
-            </div>
+            <button
+              onClick={() => {
+                handleModeSwitch('pages');
+                if (!expandedSections.has('pages')) {
+                  toggleSection('pages');
+                }
+              }}
+              className="flex items-center gap-2 flex-1"
+            >
+              <div className="nav-icon-wrapper">
+                <FileText size={20} />
+              </div>
+              {isExpanded && <span className="nav-label">Pages</span>}
+            </button>
             {isExpanded && (
-              <>
-                <span className="nav-label">Pages</span>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleSection('pages');
-                  }}
-                  className="nav-expand-btn"
-                >
-                  {expandedSections.has('pages') ? '−' : '+'}
-                </button>
-              </>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleSection('pages');
+                }}
+                className="nav-expand-btn"
+              >
+                {expandedSections.has('pages') ? '−' : '+'}
+              </button>
             )}
-          </button>
+          </div>
 
           {/* Pages List (sub-items) */}
           {isExpanded && expandedSections.has('pages') && mode === 'pages' && (
@@ -189,6 +236,71 @@ export default function Sidebar() {
           )}
         </div>
 
+        {/* Area Mode */}
+        <div className="nav-section">
+          <div
+            className={`nav-item ${mode === 'area' ? 'active' : ''}`}
+            title={!isExpanded ? 'Area' : ''}
+          >
+            <button
+              onClick={() => {
+                handleModeSwitch('area');
+                if (!expandedSections.has('area')) {
+                  toggleSection('area');
+                }
+              }}
+              className="flex items-center gap-2 flex-1"
+            >
+              <div className="nav-icon-wrapper">
+                <PenTool size={20} />
+              </div>
+              {isExpanded && <span className="nav-label">Area</span>}
+            </button>
+            {isExpanded && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleSection('area');
+                }}
+                className="nav-expand-btn"
+              >
+                {expandedSections.has('area') ? '−' : '+'}
+              </button>
+            )}
+          </div>
+
+          {/* Scenes List (sub-items) */}
+          {isExpanded && expandedSections.has('area') && mode === 'area' && (
+            <div className="nav-subitems">
+              {scenes.length === 0 ? (
+                <div className="nav-subitem empty">
+                  <span>No scenes</span>
+                </div>
+              ) : (
+                scenes.map((scene) => (
+                  <div
+                    key={scene.id}
+                    onClick={() => handleSceneClick(scene.id)}
+                    className={`nav-subitem group ${activeSceneId === scene.id ? 'active' : ''}`}
+                  >
+                    <PenTool size={16} className="nav-subitem-icon" />
+                    <span className="nav-subitem-label">{scene.title}</span>
+                    {scenes.length > 1 && (
+                      <button
+                        onClick={(e) => handleDeleteScene(e, scene.id)}
+                        className="nav-subitem-delete"
+                        title="Delete scene"
+                      >
+                        <Trash2 size={12} />
+                      </button>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+        </div>
+
         {/* Create Page (only in Pages mode) */}
         {mode === 'pages' && (
           <button
@@ -202,6 +314,25 @@ export default function Sidebar() {
             {isExpanded && (
               <>
                 <span className="nav-label">New Page</span>
+                <span className="nav-expand-btn">+</span>
+              </>
+            )}
+          </button>
+        )}
+
+        {/* Create Scene (only in Area mode) */}
+        {mode === 'area' && (
+          <button
+            onClick={handleCreateScene}
+            className="nav-item"
+            title={!isExpanded ? 'New Scene' : ''}
+          >
+            <div className="nav-icon-wrapper">
+              <Plus size={20} />
+            </div>
+            {isExpanded && (
+              <>
+                <span className="nav-label">New Scene</span>
                 <span className="nav-expand-btn">+</span>
               </>
             )}
@@ -256,8 +387,12 @@ export default function Sidebar() {
                 <span>Switch to Pages</span>
               </div>
               <div className="shortcut-item">
+                <span className="shortcut-key">⌘⇧A</span>
+                <span>Switch to Area</span>
+              </div>
+              <div className="shortcut-item">
                 <span className="shortcut-key">⌘N</span>
-                <span>New Page</span>
+                <span>New Page/Scene</span>
               </div>
               <div className="shortcut-item">
                 <span className="shortcut-key">⌘Z</span>
@@ -318,6 +453,20 @@ export default function Sidebar() {
                     <span>Clear All Pages</span>
                   </button>
                 )}
+                {mode === 'area' && (
+                  <button
+                    onClick={() => {
+                      if (window.confirm('Are you sure you want to clear all scenes? This cannot be undone.')) {
+                        handleClearAllScenes();
+                        setShowSettings(false);
+                      }
+                    }}
+                    className="settings-btn danger"
+                  >
+                    <Trash2 size={16} />
+                    <span>Clear All Scenes</span>
+                  </button>
+                )}
                 <button
                   onClick={() => {
                     const json = exportNotes();
@@ -352,6 +501,25 @@ export default function Sidebar() {
                   >
                     <Download size={16} />
                     <span>Export Pages</span>
+                  </button>
+                )}
+                {mode === 'area' && (
+                  <button
+                    onClick={() => {
+                      const json = handleExportScenes();
+                      const blob = new Blob([json], { type: 'application/json' });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = `scenes-${Date.now()}.json`;
+                      a.click();
+                      URL.revokeObjectURL(url);
+                      setShowSettings(false);
+                    }}
+                    className="settings-btn"
+                  >
+                    <Download size={16} />
+                    <span>Export Scenes</span>
                   </button>
                 )}
               </div>

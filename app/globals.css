@@ -382,6 +382,12 @@
   background: oklch(0.08 0 0);
 }
 
+.content-area.area-mode {
+  background: #0c0c0c;
+  overflow: visible;
+  pointer-events: auto;
+}
+
 /* Sidebar Styles - Black Theme */
 .sidebar-container {
   @apply h-full flex flex-col relative;
@@ -448,7 +454,16 @@
   color: rgba(255, 255, 255, 0.7);
   background: transparent;
   border: none;
+  text-align: left;
+}
+
+.nav-item button {
+  @apply flex items-center gap-2;
+  background: transparent;
+  border: none;
+  color: inherit;
   cursor: pointer;
+  padding: 0;
   text-align: left;
 }
 
@@ -900,6 +915,141 @@ select:focus {
 
 .pages-editor:focus {
   outline: none;
+}
+
+/* Area Mode Styles */
+.area-mode-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: #0c0c0c;
+}
+
+.area-mode-empty {
+  @apply w-full h-full flex items-center justify-center;
+  background: #0c0c0c;
+}
+
+.area-toolbar {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  pointer-events: auto;
+}
+
+.area-canvas-wrapper {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #0c0c0c;
+  overflow: hidden;
+  cursor: crosshair;
+}
+
+/* Drawing Canvas - Fixed size to container with high quality rendering */
+.drawing-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: #0c0c0c;
+  touch-action: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* High quality rendering */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+  /* Smooth rendering for better quality */
+  image-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.cursor-canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 100;
+  /* Smooth rendering for cursor */
+  image-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.toolbar-slider {
+  width: 80px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.toolbar-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  background: #ffffff;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.toolbar-slider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  background: #ffffff;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+
+.toolbar-size-label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  min-width: 35px;
+  text-align: center;
+}
+
+.toolbar-color {
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  cursor: pointer;
+  background: transparent;
+  padding: 0;
+}
+
+.toolbar-color::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.toolbar-color::-webkit-color-swatch {
+  border: none;
+  border-radius: 4px;
 }
 
 /* Animations */
