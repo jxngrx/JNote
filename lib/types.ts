@@ -54,3 +54,40 @@ export interface CanvasStore extends CanvasState {
   exportJSON: () => string;
   importJSON: (json: string) => void;
 }
+
+// Pages Mode Types
+export type AppMode = 'sticky-notes' | 'pages';
+
+export interface Page {
+  id: string;
+  title: string;
+  content: string; // HTML content
+  createdAt: number;
+  updatedAt: number;
+}
+
+export interface PagesState {
+  pages: Page[];
+  activePageId: string | null;
+}
+
+export interface PagesStore extends PagesState {
+  createPage: () => string;
+  updatePage: (id: string, updates: Partial<Page>) => void;
+  deletePage: (id: string) => void;
+  setActivePage: (id: string | null) => void;
+  loadFromStorage: () => void;
+  saveToStorage: () => void;
+}
+
+// Global App State
+export interface AppState {
+  mode: AppMode;
+  lastMode: AppMode;
+}
+
+export interface AppStore extends AppState {
+  setMode: (mode: AppMode) => void;
+  loadFromStorage: () => void;
+  saveToStorage: () => void;
+}

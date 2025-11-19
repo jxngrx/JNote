@@ -198,7 +198,7 @@ export default function NoteToolbar() {
                   textStyle: { ...selectedNote.textStyle, fontSize: e.target.value as 'small' | 'medium' | 'large' }
                 });
               }}
-              className="w-full px-2 py-1 bg-white/10 text-white rounded text-xs border border-white/20"
+              className="w-full px-2 py-1 bg-[#0C0C0C] text-white rounded text-xs border border-white/20"
               aria-label="Font size"
             >
               <option value="small">Small</option>
@@ -257,7 +257,7 @@ export default function NoteToolbar() {
                   textStyle: { ...selectedNote.textStyle, textAlign: e.target.value as 'left' | 'center' | 'right' }
                 });
               }}
-              className="w-full px-2 py-1 bg-white/10 text-white rounded text-xs border border-white/20"
+              className="w-full px-2 py-1 bg-[#0C0C0C] text-white rounded text-xs border border-white/20"
               aria-label="Text alignment"
             >
               <option value="left">Left</option>

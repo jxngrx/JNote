@@ -366,3 +366,575 @@
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
+
+/* App Container Layout */
+.app-container {
+  @apply flex w-full h-screen overflow-hidden;
+  background: linear-gradient(135deg, oklch(0.08 0 0) 0%, oklch(0.1 0.02 240) 50%, oklch(0.08 0 0) 100%);
+}
+
+.content-area {
+  @apply flex-1 relative overflow-hidden;
+  transition: opacity 0.3s ease-in-out, margin-left 0.3s ease;
+}
+
+.content-area.pages-mode {
+  background: oklch(0.08 0 0);
+}
+
+/* Sidebar Styles - Black Theme */
+.sidebar-container {
+  @apply h-full flex flex-col relative;
+  background: #0C0C0C;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: 'Inter', sans-serif;
+  transition: width 0.3s ease;
+  border-radius: 12px 0 0 12px;
+  margin: 8px 0 8px 8px;
+}
+
+.sidebar-container.collapsed {
+  width: 64px;
+}
+
+.sidebar-container.expanded {
+  width: 240px;
+}
+
+.sidebar-header {
+  @apply flex items-center py-3 border-b border-white/5;
+  min-height: 56px;
+}
+
+.sidebar-container.expanded .sidebar-header {
+  @apply justify-between px-4;
+}
+
+.sidebar-container.collapsed .sidebar-header {
+  @apply justify-center px-0;
+}
+
+.sidebar-toggle-btn {
+  @apply p-1.5 rounded-lg transition-colors;
+  color: rgba(255, 255, 255, 0.6);
+  background: transparent;
+}
+
+.sidebar-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.sidebar-nav {
+  @apply flex flex-col py-2 overflow-y-auto flex-1;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+
+/* Navigation Items */
+.nav-item {
+  @apply flex items-center gap-3 py-2.5 rounded-lg transition-all duration-150 relative;
+  color: rgba(255, 255, 255, 0.7);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.sidebar-container.expanded .nav-item {
+  @apply px-3 mx-2;
+  width: calc(100% - 16px);
+}
+
+.sidebar-container.collapsed .nav-item {
+  @apply justify-center px-0 mx-auto;
+  width: 40px;
+}
+
+.sidebar-container.collapsed .nav-label,
+.sidebar-container.collapsed .nav-expand-btn {
+  display: none;
+}
+
+.sidebar-container.collapsed .nav-subitems {
+  display: none;
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.nav-item.active {
+  background: #FFFFFF;
+  color: #000000;
+}
+
+.nav-icon-wrapper {
+  @apply flex items-center justify-center flex-shrink-0;
+  width: 24px;
+  height: 24px;
+}
+
+.nav-item.active .nav-icon-wrapper {
+  @apply rounded-full;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.nav-label {
+  @apply flex-1 text-sm font-medium;
+}
+
+.nav-expand-btn {
+  @apply w-5 h-5 flex items-center justify-center rounded text-xs font-semibold;
+  color: rgba(255, 255, 255, 0.5);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.nav-item.active .nav-expand-btn {
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.nav-expand-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-item.active .nav-expand-btn:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* Navigation Section (for expandable items) */
+.nav-section {
+  @apply flex flex-col;
+}
+
+/* Sub-items */
+.nav-subitems {
+  @apply flex flex-col ml-6 mt-1 mb-2;
+  position: relative;
+  padding-left: 12px;
+}
+
+.nav-subitems::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-subitem {
+  @apply flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-150 relative;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+.nav-subitem::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  width: 8px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-subitem:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.nav-subitem.active {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.nav-subitem.empty {
+  @apply text-xs;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: default;
+}
+
+.nav-subitem-icon {
+  @apply flex-shrink-0;
+  width: 16px;
+  height: 16px;
+}
+
+.nav-subitem-label {
+  @apply flex-1 text-sm;
+}
+
+.nav-subitem-delete {
+  @apply p-1.5 rounded opacity-0 transition-all;
+  color: rgba(255, 255, 255, 0.4);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.nav-subitem:hover .nav-subitem-delete,
+.nav-subitem.active .nav-subitem-delete {
+  opacity: 1;
+}
+
+.nav-subitem-delete:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.2);
+  transform: scale(1.1);
+}
+
+.nav-subitem-delete:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.nav-subitem-delete:disabled:hover {
+  transform: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Pages List */
+.pages-list {
+  @apply flex flex-col gap-1 max-h-[400px] overflow-y-auto;
+}
+
+.pages-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.pages-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.pages-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+
+.page-item {
+  @apply flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-all duration-150;
+  color: rgba(255, 255, 255, 0.7);
+  position: relative;
+}
+
+.page-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.page-item.active {
+  background: #1F1F1F;
+  color: #FFFFFF;
+}
+
+.page-title {
+  @apply flex-1 truncate text-sm;
+}
+
+.page-delete-btn {
+  @apply p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.page-delete-btn:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.page-item:hover .page-delete-btn {
+  opacity: 1;
+}
+
+.empty-state {
+  @apply text-center py-8;
+}
+
+/* Sidebar Action Buttons */
+.sidebar-action-btn {
+  @apply w-full flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 mb-2;
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.7);
+  border: 1px solid transparent;
+}
+
+.sidebar-action-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.9);
+  transform: translateX(2px);
+}
+
+.sidebar-action-btn.primary {
+  background: rgba(59, 130, 246, 0.1);
+  color: #60a5fa;
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+.sidebar-action-btn.primary:hover {
+  background: rgba(59, 130, 246, 0.15);
+  color: #93c5fd;
+}
+
+/* Shortcuts Modal */
+.shortcuts-modal-overlay {
+  @apply fixed inset-0 z-[300] flex items-center justify-center;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.shortcuts-modal {
+  @apply bg-[#1A1A1A] rounded-2xl p-6 max-w-md w-full mx-4;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.3s ease-out;
+}
+
+.shortcuts-modal-header {
+  @apply flex items-center justify-between mb-6;
+}
+
+.shortcuts-modal-header h3 {
+  @apply text-xl font-semibold text-white;
+}
+
+.close-btn {
+  @apply p-1 rounded-lg transition-colors;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.shortcuts-list {
+  @apply flex flex-col gap-3;
+}
+
+.shortcut-item {
+  @apply flex items-center justify-between py-2 px-3 rounded-lg;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.shortcut-key {
+  @apply px-2 py-1 rounded text-xs font-mono;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Settings Modal */
+.settings-list {
+  @apply flex flex-col gap-4;
+}
+
+.settings-section {
+  @apply flex flex-col gap-2;
+}
+
+.settings-section-title {
+  @apply text-sm font-semibold text-white/80 mb-2;
+}
+
+.settings-btn {
+  @apply flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  text-align: left;
+}
+
+.settings-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.settings-btn.danger {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.settings-btn.danger:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* Pages Mode Styles */
+.pages-mode-container {
+  @apply w-full h-full flex flex-col relative;
+}
+
+.pages-mode-empty {
+  @apply w-full h-full flex items-center justify-center;
+}
+
+.empty-content {
+  @apply text-center;
+}
+
+.pages-toolbar {
+  @apply fixed top-4 left-1/2 transform -translate-x-1/2 flex items-center gap-2 px-4 py-2 rounded-full z-[100];
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  animation: fadeInDown 0.3s ease-out;
+}
+
+.toolbar-group {
+  @apply flex items-center gap-1;
+}
+
+.toolbar-divider {
+  @apply w-px h-6 bg-white/10;
+}
+
+.toolbar-btn {
+  @apply w-8 h-8 flex items-center justify-center rounded-lg transition-all;
+  color: rgba(255, 255, 255, 0.7);
+  background: transparent;
+}
+
+.toolbar-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.toolbar-btn.active {
+  background: rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+}
+
+.toolbar-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.toolbar-btn:disabled:hover {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.toolbar-select {
+  @apply px-2 py-1 rounded-lg text-xs;
+  background: #0C0C0C;
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  outline: none;
+}
+
+.toolbar-select:focus {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: #1A1A1A;
+}
+
+.toolbar-select option {
+  background: #0C0C0C;
+  color: #FFFFFF;
+}
+
+/* Global select/dropdown styling - black theme */
+select {
+  background: #0C0C0C !important;
+  color: #FFFFFF !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+select option {
+  background: #0C0C0C !important;
+  color: #FFFFFF !important;
+}
+
+select:focus {
+  background: #1A1A1A !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  outline: none !important;
+}
+
+.toolbar-color {
+  @apply w-8 h-8 rounded-lg cursor-pointer;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+}
+
+.pages-editor-wrapper {
+  @apply flex-1 overflow-auto p-8 md:p-16 lg:p-24;
+  padding-top: 80px;
+}
+
+.pages-editor {
+  @apply w-full max-w-4xl mx-auto outline-none;
+  min-height: 100%;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.pages-editor[data-placeholder]:empty:before {
+  content: attr(data-placeholder);
+  color: rgba(255, 255, 255, 0.3);
+  pointer-events: none;
+}
+
+.pages-editor:focus {
+  outline: none;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -10px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* Mode Switch Animation */
+.content-area {
+  animation: fadeIn 0.3s ease-in-out;
+}
