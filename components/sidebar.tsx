@@ -18,7 +18,8 @@ import {
   Trash2,
   Menu,
   Sparkles,
-  Download
+  Download,
+  CheckSquare
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
@@ -184,7 +185,7 @@ export default function Sidebar() {
                   toggleSection('pages');
                 }
               }}
-              className="flex items-center gap-2 flex-1"
+              className="nav-item-button"
             >
               <div className="nav-icon-wrapper">
                 <FileText size={20} />
@@ -249,7 +250,7 @@ export default function Sidebar() {
                   toggleSection('area');
                 }
               }}
-              className="flex items-center gap-2 flex-1"
+              className="nav-item-button"
             >
               <div className="nav-icon-wrapper">
                 <PenTool size={20} />
@@ -300,6 +301,18 @@ export default function Sidebar() {
             </div>
           )}
         </div>
+
+        {/* Todo Mode */}
+        <button
+          onClick={() => handleModeSwitch('todo')}
+          className={`nav-item ${mode === 'todo' ? 'active' : ''}`}
+          title={!isExpanded ? 'Todo' : ''}
+        >
+          <div className="nav-icon-wrapper">
+            <CheckSquare size={20} />
+          </div>
+          {isExpanded && <span className="nav-label">Todo</span>}
+        </button>
 
         {/* Create Page (only in Pages mode) */}
         {mode === 'pages' && (

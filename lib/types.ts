@@ -56,7 +56,7 @@ export interface CanvasStore extends CanvasState {
 }
 
 // Pages Mode Types
-export type AppMode = 'sticky-notes' | 'pages' | 'area';
+export type AppMode = 'sticky-notes' | 'pages' | 'area' | 'todo';
 
 export interface Page {
   id: string;

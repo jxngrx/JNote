@@ -388,6 +388,11 @@
   pointer-events: auto;
 }
 
+.content-area.todo-mode {
+  background: #0c0c0c;
+  overflow-y: auto;
+}
+
 /* Sidebar Styles - Black Theme */
 .sidebar-container {
   @apply h-full flex flex-col relative;
@@ -465,6 +470,22 @@
   cursor: pointer;
   padding: 0;
   text-align: left;
+}
+
+.nav-item-button {
+  @apply flex items-center gap-2 flex-1;
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+  width: 100%;
+}
+
+.nav-item .nav-item-button {
+  flex: 1;
+  min-width: 0;
 }
 
 .sidebar-container.expanded .nav-item {
@@ -1082,6 +1103,317 @@ select:focus {
     opacity: 1;
     transform: translate(-50%, 0);
   }
+}
+
+/* Todo Mode Styles */
+.todo-mode-container {
+  @apply w-full h-full flex flex-col;
+  background: #0c0c0c;
+  color: #ffffff;
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+  overflow-y: auto;
+}
+
+.todo-header {
+  @apply mb-6;
+}
+
+.todo-title {
+  @apply text-4xl font-bold;
+  color: #ffffff;
+  margin: 0;
+}
+
+.todo-date-selector {
+  @apply flex gap-2 mb-6;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.todo-date-selector::-webkit-scrollbar {
+  height: 4px;
+}
+
+.todo-date-selector::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+}
+
+.todo-date-selector::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+.todo-date-btn {
+  @apply flex flex-col items-center justify-center px-4 py-2 rounded-lg;
+  min-width: 70px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.todo-date-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.todo-date-btn.selected {
+  background: rgba(255, 152, 0, 0.2);
+  border-color: #ff9800;
+  color: #ffffff;
+}
+
+.todo-date-btn.today {
+  border-color: rgba(255, 152, 0, 0.5);
+}
+
+.todo-date-day {
+  @apply text-xs font-medium;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 0.25rem;
+}
+
+.todo-date-btn.selected .todo-date-day {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.todo-date-number {
+  @apply text-base font-semibold;
+  color: #ffffff;
+}
+
+.todo-progress-card {
+  @apply mb-6 rounded-xl;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+}
+
+.todo-progress-content {
+  @apply flex items-center justify-between;
+}
+
+.todo-progress-text {
+  @apply flex flex-col;
+}
+
+.todo-progress-label {
+  @apply text-lg font-semibold;
+  color: #ffffff;
+  margin-bottom: 0.25rem;
+}
+
+.todo-progress-subtitle {
+  @apply text-sm;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.todo-progress-circle {
+  @apply w-16 h-16 rounded-full flex items-center justify-center;
+  background: #ff9800;
+}
+
+.todo-progress-value {
+  @apply text-lg font-bold;
+  color: #ffffff;
+}
+
+.todo-tasks-container {
+  @apply flex-1 mb-6;
+  overflow-y: auto;
+}
+
+.todo-category-section {
+  @apply mb-6;
+}
+
+.todo-category-title {
+  @apply text-sm font-semibold mb-3;
+  color: #ff9800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.todo-tasks-list {
+  @apply flex flex-col gap-2;
+}
+
+.todo-task-item {
+  @apply flex items-center gap-3 px-4 py-3 rounded-lg;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s;
+}
+
+.todo-task-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.todo-task-item.completed .todo-task-title {
+  text-decoration: line-through;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.todo-checkbox {
+  @apply w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0;
+  border: 2px solid #ff9800;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.todo-checkbox:hover {
+  border-color: #ffb74d;
+  background: rgba(255, 152, 0, 0.1);
+}
+
+.todo-checkbox.checked {
+  background: #4caf50;
+  border-color: #4caf50;
+  color: #ffffff;
+}
+
+.todo-task-title {
+  @apply flex-1 text-base;
+  color: #ffffff;
+}
+
+.todo-task-actions {
+  @apply flex items-center gap-2;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.todo-task-item:hover .todo-task-actions {
+  opacity: 1;
+}
+
+.todo-action-btn {
+  @apply w-6 h-6 flex items-center justify-center rounded;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.todo-action-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.todo-edit-input {
+  @apply flex-1 px-2 py-1 rounded;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+.todo-edit-input:focus {
+  outline: none;
+  border-color: #ff9800;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.todo-input-container {
+  @apply flex items-center gap-2 mt-auto pt-4;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.todo-input {
+  @apply flex-1 px-4 py-3 rounded-lg;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-size: 1rem;
+  resize: none;
+  min-height: 48px;
+  max-height: 120px;
+  overflow-y: auto;
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+.todo-input.todo-textarea {
+  @apply py-3;
+}
+
+.todo-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.todo-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.todo-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.todo-loading {
+  @apply inline-block;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.todo-add-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.todo-add-btn:disabled:hover {
+  background: #ff9800;
+  transform: none;
+}
+
+.todo-category-select {
+  @apply px-3 py-3 rounded-lg;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.todo-category-select:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.todo-add-btn {
+  @apply w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0;
+  background: #ff9800;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.todo-add-btn:hover {
+  background: #ffb74d;
+  transform: scale(1.05);
+}
+
+.todo-add-btn:active {
+  transform: scale(0.95);
 }
 
 /* Mode Switch Animation */
