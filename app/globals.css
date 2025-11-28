@@ -423,12 +423,29 @@
 
 .sidebar-container.collapsed .sidebar-header {
   @apply justify-center px-0;
+  position: relative;
+}
+
+.sidebar-container.collapsed .sidebar-header > *:first-child {
+  @apply mx-auto;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .sidebar-toggle-btn {
   @apply p-1.5 rounded-lg transition-colors;
   color: rgba(255, 255, 255, 0.6);
   background: transparent;
+  flex-shrink: 0;
+}
+
+.sidebar-container.collapsed .sidebar-toggle-btn {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  padding: 4px;
 }
 
 .sidebar-toggle-btn:hover {
@@ -438,6 +455,12 @@
 
 .sidebar-nav {
   @apply flex flex-col py-2 overflow-y-auto flex-1;
+}
+
+.sidebar-container.collapsed .sidebar-nav {
+  @apply items-center;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .sidebar-nav::-webkit-scrollbar {
@@ -495,7 +518,12 @@
 
 .sidebar-container.collapsed .nav-item {
   @apply justify-center px-0 mx-auto;
-  width: 40px;
+  width: 48px;
+  min-width: 48px;
+}
+
+.sidebar-container.collapsed .nav-icon-wrapper {
+  @apply mx-auto;
 }
 
 .sidebar-container.collapsed .nav-label,
@@ -521,6 +549,12 @@
   @apply flex items-center justify-center flex-shrink-0;
   width: 24px;
   height: 24px;
+}
+
+.sidebar-container.collapsed .nav-icon-wrapper {
+  width: 24px;
+  height: 24px;
+  margin: 0 auto;
 }
 
 .nav-item.active .nav-icon-wrapper {
@@ -556,6 +590,14 @@
 /* Navigation Section (for expandable items) */
 .nav-section {
   @apply flex flex-col;
+}
+
+.sidebar-container.collapsed .nav-section {
+  @apply items-center;
+}
+
+.sidebar-container.collapsed .nav-section .nav-item {
+  @apply justify-center;
 }
 
 /* Sub-items */
