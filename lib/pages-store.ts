@@ -10,12 +10,23 @@ const generatePageId = () => `page_${Date.now()}_${Math.random().toString(36).su
 let saveDebounceTimer: NodeJS.Timeout | null = null;
 
 function computeAutoTitle(html: string, maxLetters = 10) {
-  const withoutTags = (html || '').replace(/<[^>]*>/g, '');
-  const normalized = withoutTags
-    .replace(/&nbsp;/gi, ' ')
-    .replace(/\u00a0/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+  const raw = html || '';
+  // Preserve visual "line" boundaries before stripping tags so the title
+  // only comes from the first line the user typed.
+  const withLineBreaks = raw
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/(p|div|h[1-6]|li|tr|blockquote|pre)\s*>/gi, '\n');
+
+  const text = withLineBreaks.replace(/<[^>]*>/g, '');
+  const firstLineRaw =
+    text
+      .replace(/&nbsp;/gi, ' ')
+      .replace(/\u00a0/g, ' ')
+      .split(/\r?\n/)
+      .map((l) => l.replace(/\s+/g, ' ').trim())
+      .find((l) => l.length > 0) ?? '';
+
+  const normalized = firstLineRaw;
 
   // Keep spaces between words, but limit by letter count (A-Z).
   let letterCount = 0;

@@ -19,8 +19,12 @@ export default function TodoMode() {
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
   const [isProcessingBulk, setIsProcessingBulk] = useState(false);
+  const [activeTab, setActiveTab] = useState<'active' | 'done'>('active');
 
   const activeList = lists.find((l) => l.id === activeListId) || null;
+  const visibleTasks = activeList
+    ? activeList.items.filter((t) => (activeTab === 'done' ? t.completed : !t.completed))
+    : [];
 
   useEffect(() => {
     if (!activeListId && lists.length === 0) {
@@ -149,8 +153,37 @@ export default function TodoMode() {
         ) : activeList.items.length === 0 ? (
           <div className="text-white/40">No tasks yet.</div>
         ) : (
-          <div className="todo-tasks-list">
-            {activeList.items.map((task) => (
+          <>
+            <div className="todo-tabs">
+              <button
+                type="button"
+                className={`todo-tab-btn ${activeTab === 'active' ? 'active' : ''}`}
+                onClick={() => setActiveTab('active')}
+              >
+                Active
+                <span className="todo-tab-count">
+                  {activeList.items.filter((i) => !i.completed).length}
+                </span>
+              </button>
+              <button
+                type="button"
+                className={`todo-tab-btn ${activeTab === 'done' ? 'active' : ''}`}
+                onClick={() => setActiveTab('done')}
+              >
+                Done
+                <span className="todo-tab-count">
+                  {activeList.items.filter((i) => i.completed).length}
+                </span>
+              </button>
+            </div>
+
+            {visibleTasks.length === 0 ? (
+              <div className="text-white/40">
+                {activeTab === 'done' ? 'No completed tasks yet.' : 'No active tasks.'}
+              </div>
+            ) : (
+              <div className="todo-tasks-list">
+                {visibleTasks.map((task) => (
               <div key={task.id} className={`todo-task-item ${task.completed ? 'completed' : ''}`}>
                 <button
                   onClick={() => toggleItem(task.id)}
@@ -192,8 +225,10 @@ export default function TodoMode() {
                   )}
                 </div>
               </div>
-            ))}
-          </div>
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
 

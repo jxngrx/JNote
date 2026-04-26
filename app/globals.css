@@ -1384,6 +1384,45 @@ select:focus {
   overflow-y: auto;
 }
 
+.todo-tabs {
+  @apply flex gap-2 mb-4 p-1 rounded-xl;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+}
+
+.todo-tab-btn {
+  @apply flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold;
+  background: transparent;
+  border: 1px solid transparent;
+  color: rgba(255, 255, 255, 0.65);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.todo-tab-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.todo-tab-btn.active {
+  background: rgba(255, 152, 0, 0.18);
+  border-color: rgba(255, 152, 0, 0.45);
+  color: #ffffff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.todo-tab-count {
+  @apply text-xs font-bold px-2 py-0.5 rounded-full;
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.todo-tab-btn.active .todo-tab-count {
+  background: rgba(255, 152, 0, 0.28);
+  color: #ffffff;
+}
+
 .todo-category-section {
   @apply mb-6;
 }

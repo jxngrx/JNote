@@ -542,22 +542,6 @@ export default function Sidebar() {
                 <span className="shortcut-key">⌘⇧A</span>
                 <span>Switch to Area</span>
               </div>
-              <div className="shortcut-item">
-                <span className="shortcut-key">⌘N</span>
-                <span>New Page/Scene</span>
-              </div>
-              <div className="shortcut-item">
-                <span className="shortcut-key">⌘Z</span>
-                <span>Undo</span>
-              </div>
-              <div className="shortcut-item">
-                <span className="shortcut-key">⌘⇧Z</span>
-                <span>Redo</span>
-              </div>
-              <div className="shortcut-item">
-                <span className="shortcut-key">⌘Space</span>
-                <span>Focus Sidebar</span>
-              </div>
             </div>
           </div>
         </div>
