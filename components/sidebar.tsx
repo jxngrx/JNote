@@ -86,16 +86,11 @@ export default function Sidebar() {
   };
 
   const exportArea = () => {
-    const state = useAreaStore.getState();
-    return JSON.stringify({ scenes: state.scenes, activeSceneId: state.activeSceneId, exportedAt: Date.now() });
+    return useAreaStore.getState().exportJSON();
   };
 
   const importArea = (jsonText: string) => {
-    const parsed = JSON.parse(jsonText);
-    const scenes = Array.isArray(parsed.scenes) ? parsed.scenes : [];
-    const activeSceneId = typeof parsed.activeSceneId === 'string' ? parsed.activeSceneId : null;
-    useAreaStore.setState({ scenes, activeSceneId });
-    useAreaStore.getState().saveToStorage();
+    useAreaStore.getState().importJSON(jsonText);
   };
 
   const exportTodo = () => {
@@ -171,6 +166,16 @@ export default function Sidebar() {
     const sceneToDelete = scenes.find(s => s.id === sceneId);
     if (sceneToDelete && window.confirm(`Are you sure you want to delete "${sceneToDelete.title}"?`)) {
       deleteScene(sceneId);
+    }
+  };
+
+  const handleRenameScene = (e: React.MouseEvent, sceneId: string) => {
+    e.stopPropagation();
+    const scene = scenes.find((s) => s.id === sceneId);
+    if (!scene) return;
+    const next = window.prompt('Scene title', scene.title);
+    if (next !== null) {
+      useAreaStore.getState().updateScene(sceneId, { title: next.trim() || 'Untitled Scene' });
     }
   };
 
@@ -403,13 +408,22 @@ export default function Sidebar() {
                       >
                         <PenTool size={16} className="nav-subitem-icon" />
                         <span className="nav-subitem-label">{scene.title}</span>
-                        <button
-                          onClick={(e) => handleDeleteScene(e, scene.id)}
-                          className="nav-subitem-delete"
-                          title="Delete scene"
-                        >
-                          <Trash2 size={12} />
-                        </button>
+                        <div className="flex items-center gap-1 ml-auto">
+                          <button
+                            onClick={(e) => handleRenameScene(e, scene.id)}
+                            className="nav-subitem-delete"
+                            title="Rename scene"
+                          >
+                            <Edit2 size={12} />
+                          </button>
+                          <button
+                            onClick={(e) => handleDeleteScene(e, scene.id)}
+                            className="nav-subitem-delete"
+                            title="Delete scene"
+                          >
+                            <Trash2 size={12} />
+                          </button>
+                        </div>
                       </div>
                     ))
                   )}

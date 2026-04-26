@@ -8,7 +8,7 @@ const STORAGE_KEY = 'sticky-area-v1';
 const generateSceneId = () => `scene_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
 const createEmptySceneData = (): SceneData => ({
-  imageData: null,
+  excalidraw: null,
 });
 
 let saveDebounceTimer: NodeJS.Timeout | null = null;
@@ -99,6 +99,28 @@ export const useAreaStore = create<AreaStore>((set, get) => ({
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     } catch (error) {
       console.error('Failed to save area scenes to storage:', error);
+    }
+  },
+
+  exportJSON: () => {
+    const state = get();
+    return JSON.stringify({
+      scenes: state.scenes,
+      activeSceneId: state.activeSceneId,
+      exportedAt: Date.now(),
+    });
+  },
+
+  importJSON: (json: string) => {
+    try {
+      const parsed = JSON.parse(json);
+      const scenes = Array.isArray(parsed.scenes) ? parsed.scenes : [];
+      const activeSceneId = typeof parsed.activeSceneId === 'string' ? parsed.activeSceneId : null;
+      set({ scenes, activeSceneId });
+      get().saveToStorage();
+    } catch (error) {
+      console.error('Failed to import area scenes:', error);
+      throw error;
     }
   },
 }));

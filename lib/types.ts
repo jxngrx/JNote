@@ -95,7 +95,11 @@ export interface AppStore extends AppState {
 
 // Area Mode Types
 export interface SceneData {
-  imageData: string | null; // Base64 image data
+  excalidraw: {
+    elements: any[];
+    appState?: any;
+    files?: Record<string, any>;
+  } | null;
 }
 
 export interface Scene {
@@ -118,4 +122,6 @@ export interface AreaStore extends AreaState {
   setActiveScene: (id: string | null) => void;
   loadFromStorage: () => void;
   saveToStorage: () => void;
+  exportJSON: () => string;
+  importJSON: (json: string) => void;
 }
