@@ -23,6 +23,7 @@ export default function AreaMode() {
   const cursorCanvasRef = useRef<HTMLCanvasElement>(null);
   const cursorContextRef = useRef<CanvasRenderingContext2D | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const lastSceneIdRef = useRef<string | null>(null);
 
   const activeScene = scenes.find((s) => s.id === activeSceneId);
 
@@ -30,20 +31,13 @@ export default function AreaMode() {
     setIsClient(true);
   }, []);
 
-  // Auto-create scene if none exist
-  useEffect(() => {
-    if (scenes.length === 0 && isClient) {
-      const createScene = useAreaStore.getState().createScene;
-      createScene();
-    }
-  }, [scenes.length, isClient]);
-
   // Initialize main canvas with high DPI support
   useEffect(() => {
     if (!canvasRef.current || !activeScene || !containerRef.current) return;
 
     const canvas = canvasRef.current;
     const container = containerRef.current;
+    const sceneId = activeScene.id;
 
     const resizeCanvas = () => {
       const width = container.clientWidth;
@@ -65,7 +59,7 @@ export default function AreaMode() {
 
       // Only resize if dimensions changed
       if (canvas.width !== internalWidth || canvas.height !== internalHeight) {
-        const hadContent = canvas.width > 0 && canvas.height > 0;
+        const hadContent = canvas.width > 0 && canvas.height > 0 && lastSceneIdRef.current === sceneId;
         let savedImage: ImageData | null = null;
 
         if (hadContent) {
@@ -93,14 +87,15 @@ export default function AreaMode() {
 
         contextRef.current = ctx;
 
-        // Scale context to match device pixel ratio
+        // Reset transform then scale for DPR (avoid stacking scales)
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.scale(dpr, dpr);
 
         // Set background
         ctx.fillStyle = '#0c0c0c';
         ctx.fillRect(0, 0, displayWidth, displayHeight);
 
-        // Restore saved image or load from scene
+        // Restore saved image (only when resizing same scene) otherwise load from scene
         if (savedImage) {
           try {
             // Scale saved image if needed
@@ -138,18 +133,35 @@ export default function AreaMode() {
           }
         }
       } else {
-        // Canvas size hasn't changed, just ensure context ref is set
+        // Canvas size hasn't changed: reset transform + redraw current scene image
         const ctx = canvas.getContext('2d', { willReadFrequently: true });
-        if (ctx) {
-          const dpr = window.devicePixelRatio || 1;
-          ctx.scale(dpr, dpr);
-          contextRef.current = ctx;
+        if (!ctx) return;
+
+        const dpr = window.devicePixelRatio || 1;
+        contextRef.current = ctx;
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.scale(dpr, dpr);
+
+        // Clear and draw current scene
+        ctx.fillStyle = '#0c0c0c';
+        ctx.fillRect(0, 0, displayWidth, displayHeight);
+
+        const imageData = activeScene.data.imageData;
+        if (imageData) {
+          const img = new Image();
+          img.onload = () => {
+            if (contextRef.current) {
+              contextRef.current.drawImage(img, 0, 0, displayWidth, displayHeight);
+            }
+          };
+          img.src = imageData;
         }
       }
     };
 
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
+    lastSceneIdRef.current = sceneId;
 
     return () => {
       window.removeEventListener('resize', resizeCanvas);
@@ -418,7 +430,7 @@ export default function AreaMode() {
   };
 
   const handleDelete = () => {
-    if (!activeScene || scenes.length <= 1) return;
+    if (!activeScene) return;
     if (window.confirm(`Are you sure you want to delete "${activeScene.title}"?`)) {
       deleteScene(activeScene.id);
     }
@@ -540,15 +552,13 @@ export default function AreaMode() {
           >
             <Upload size={16} />
           </button>
-          {scenes.length > 1 && (
-            <button
-              onClick={handleDelete}
-              className="toolbar-btn hover:text-red-400"
-              title="Delete Scene"
-            >
-              <Trash2 size={16} />
-            </button>
-          )}
+          <button
+            onClick={handleDelete}
+            className="toolbar-btn hover:text-red-400"
+            title="Delete Scene"
+          >
+            <Trash2 size={16} />
+          </button>
         </div>
       </div>
 

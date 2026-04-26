@@ -1,153 +1,241 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export interface TodoTask {
+export interface TodoItem {
   id: string;
   title: string;
   completed: boolean;
-  category: string;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export interface TodoList {
+  id: string;
+  title: string;
+  titleMode?: 'auto' | 'custom';
+  items: TodoItem[];
   createdAt: number;
   updatedAt: number;
 }
 
 export interface TodoState {
-  tasks: TodoTask[];
-  categories: string[];
-  selectedDate: string; // ISO date string
+  lists: TodoList[];
+  activeListId: string | null;
 }
 
 export interface TodoStore extends TodoState {
-  createTask: (title: string, category?: string) => string;
-  updateTask: (id: string, updates: Partial<TodoTask>) => void;
-  deleteTask: (id: string) => void;
-  toggleTask: (id: string) => void;
-  setSelectedDate: (date: string) => void;
-  addCategory: (category: string) => void;
-  deleteCategory: (category: string) => void;
+  createList: () => string;
+  updateList: (id: string, updates: Partial<Pick<TodoList, 'title' | 'titleMode'>>) => void;
+  deleteList: (id: string) => void;
+  setActiveList: (id: string | null) => void;
+
+  createItem: (title: string) => string | null;
+  updateItem: (id: string, updates: Partial<TodoItem>) => void;
+  deleteItem: (id: string) => void;
+  toggleItem: (id: string) => void;
+
   loadFromStorage: () => void;
   saveToStorage: () => void;
 }
 
-const getTodayDate = (): string => {
-  const today = new Date();
-  return today.toISOString().split('T')[0];
+const STORAGE_KEY = 'todo-storage';
+const STORE_VERSION = 2;
+
+const generateId = (prefix: string) => `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+
+const computeAutoTitle = (text: string, maxLen = 24) => {
+  const normalized = (text || '').replace(/\s+/g, ' ').trim();
+  return (normalized.slice(0, maxLen).trim() || 'Untitled');
+};
+
+type LegacyTodoTask = {
+  id: string;
+  title: string;
+  completed: boolean;
+  category?: string;
+  createdAt: number;
+  updatedAt: number;
+};
+
+type LegacyPersist = {
+  state?: {
+    tasks?: LegacyTodoTask[];
+  };
 };
 
 export const useTodoStore = create<TodoStore>()(
   persist(
-    (set, get) => {
-      // Initialize selectedDate if not in storage
-      const stored = typeof window !== 'undefined' ? localStorage.getItem('todo-storage') : null;
-      let initialDate = getTodayDate();
-      if (stored) {
-        try {
-          const parsed = JSON.parse(stored);
-          if (parsed.state?.selectedDate) {
-            initialDate = parsed.state.selectedDate;
-          }
-        } catch (e) {
-          // Use default
-        }
-      }
+    (set, get) => ({
+      lists: [],
+      activeListId: null,
 
-      return {
-        tasks: [],
-        categories: ['DESIGN', 'PERSONAL', 'HOUSE'],
-        selectedDate: initialDate,
-
-      createTask: (title: string, category?: string) => {
-        const newTask: TodoTask = {
-          id: `todo-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          title: title.trim(),
-          completed: false,
-          category: category || 'PERSONAL',
-          createdAt: Date.now(),
-          updatedAt: Date.now(),
+      createList: () => {
+        const id = generateId('todoList');
+        const now = Date.now();
+        const newList: TodoList = {
+          id,
+          title: 'Untitled',
+          titleMode: 'auto',
+          items: [],
+          createdAt: now,
+          updatedAt: now,
         };
 
         set((state) => ({
-          tasks: [...state.tasks, newTask],
+          lists: [...state.lists, newList],
+          activeListId: id,
         }));
 
-        get().saveToStorage();
-        return newTask.id;
+        return id;
       },
 
-      updateTask: (id: string, updates: Partial<TodoTask>) => {
+      updateList: (id, updates) => {
         set((state) => ({
-          tasks: state.tasks.map((task) =>
-            task.id === id
-              ? { ...task, ...updates, updatedAt: Date.now() }
-              : task
-          ),
+          lists: state.lists.map((l) => {
+            if (l.id !== id) return l;
+            const nextTitleMode =
+              updates.title !== undefined ? ((updates.title || '').trim() ? 'custom' : 'auto') : (l.titleMode ?? 'auto');
+            const nextTitle =
+              updates.title !== undefined
+                ? (updates.title || '').trim() || computeAutoTitle(l.items[0]?.title || '')
+                : l.title;
+            return { ...l, ...updates, title: nextTitle, titleMode: nextTitleMode, updatedAt: Date.now() };
+          }),
         }));
-
-        get().saveToStorage();
       },
 
-      deleteTask: (id: string) => {
+      deleteList: (id) => {
+        set((state) => {
+          const lists = state.lists.filter((l) => l.id !== id);
+          const activeListId = state.activeListId === id ? (lists[0]?.id ?? null) : state.activeListId;
+          return { lists, activeListId };
+        });
+      },
+
+      setActiveList: (id) => {
+        set({ activeListId: id });
+      },
+
+      createItem: (title) => {
+        const listId = get().activeListId;
+        if (!listId) return null;
+        const trimmed = title.trim();
+        if (!trimmed) return null;
+
+        const now = Date.now();
+        const newItem: TodoItem = {
+          id: generateId('todo'),
+          title: trimmed,
+          completed: false,
+          createdAt: now,
+          updatedAt: now,
+        };
+
         set((state) => ({
-          tasks: state.tasks.filter((task) => task.id !== id),
+          lists: state.lists.map((l) => {
+            if (l.id !== listId) return l;
+            const items = [...l.items, newItem];
+            const titleMode = l.titleMode ?? 'auto';
+            return {
+              ...l,
+              title: titleMode === 'custom' ? l.title : computeAutoTitle(items[0]?.title || ''),
+              titleMode,
+              items,
+              updatedAt: now,
+            };
+          }),
         }));
 
-        get().saveToStorage();
+        return newItem.id;
       },
 
-      toggleTask: (id: string) => {
+      updateItem: (id, updates) => {
         set((state) => ({
-          tasks: state.tasks.map((task) =>
-            task.id === id
-              ? { ...task, completed: !task.completed, updatedAt: Date.now() }
-              : task
-          ),
+          lists: state.lists.map((l) => {
+            if (!l.items.some((it) => it.id === id)) return l;
+            const items = l.items.map((it) => (it.id === id ? { ...it, ...updates, updatedAt: Date.now() } : it));
+            const titleMode = l.titleMode ?? 'auto';
+            return {
+              ...l,
+              title: titleMode === 'custom' ? l.title : computeAutoTitle(items[0]?.title || ''),
+              titleMode,
+              items,
+              updatedAt: Date.now(),
+            };
+          }),
         }));
-
-        get().saveToStorage();
       },
 
-      setSelectedDate: (date: string) => {
-        set({ selectedDate: date });
-        get().saveToStorage();
-      },
-
-      addCategory: (category: string) => {
-        const trimmed = category.trim().toUpperCase();
-        if (!trimmed || get().categories.includes(trimmed)) return;
-
+      deleteItem: (id) => {
         set((state) => ({
-          categories: [...state.categories, trimmed],
+          lists: state.lists.map((l) => {
+            if (!l.items.some((it) => it.id === id)) return l;
+            const items = l.items.filter((it) => it.id !== id);
+            const titleMode = l.titleMode ?? 'auto';
+            return {
+              ...l,
+              title: titleMode === 'custom' ? l.title : computeAutoTitle(items[0]?.title || ''),
+              titleMode,
+              items,
+              updatedAt: Date.now(),
+            };
+          }),
         }));
-
-        get().saveToStorage();
       },
 
-      deleteCategory: (category: string) => {
-        set((state) => ({
-          categories: state.categories.filter((cat) => cat !== category),
-          tasks: state.tasks.map((task) =>
-            task.category === category ? { ...task, category: 'PERSONAL' } : task
-          ),
-        }));
-
-        get().saveToStorage();
+      toggleItem: (id) => {
+        const list = get().lists.find((l) => l.items.some((it) => it.id === id));
+        const item = list?.items.find((it) => it.id === id);
+        if (!item) return;
+        get().updateItem(id, { completed: !item.completed });
       },
 
       loadFromStorage: () => {
-        // Handled by persist middleware
+        // handled by persist middleware
       },
 
       saveToStorage: () => {
-        // Handled by persist middleware
+        // handled by persist middleware
       },
-      };
-    },
+    }),
     {
-      name: 'todo-storage',
+      name: STORAGE_KEY,
+      version: STORE_VERSION,
+      migrate: (persisted: unknown, version: number) => {
+        // v1 legacy shape: { state: { tasks, categories, selectedDate } }
+        if (version < 2) {
+          try {
+            const legacy = persisted as LegacyPersist;
+            const tasks = legacy?.state?.tasks ?? [];
+            const now = Date.now();
+            const listId = generateId('todoList');
+            const items: TodoItem[] = tasks.map((t) => ({
+              id: t.id || generateId('todo'),
+              title: (t.title || '').trim(),
+              completed: !!t.completed,
+              createdAt: t.createdAt ?? now,
+              updatedAt: t.updatedAt ?? now,
+            }));
+            const list: TodoList = {
+              id: listId,
+              title: computeAutoTitle(items[0]?.title || ''),
+              titleMode: 'auto',
+              items,
+              createdAt: now,
+              updatedAt: now,
+            };
+            return { lists: items.length ? [list] : [], activeListId: items.length ? listId : null };
+          } catch {
+            return { lists: [], activeListId: null };
+          }
+        }
+        return persisted as TodoState;
+      },
       partialize: (state) => ({
-        tasks: state.tasks,
-        categories: state.categories,
-        selectedDate: state.selectedDate,
+        lists: state.lists,
+        activeListId: state.activeListId,
       }),
     }
   )
 );
+

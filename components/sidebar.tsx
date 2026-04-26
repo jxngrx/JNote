@@ -4,6 +4,7 @@ import { useAppStore } from '@/lib/app-store';
 import { usePagesStore } from '@/lib/pages-store';
 import { useAreaStore } from '@/lib/area-store';
 import { useCanvasStore } from '@/lib/store';
+import { useTodoStore } from '@/lib/todo-store';
 import { AppMode } from '@/lib/types';
 import {
   StickyNote,
@@ -16,10 +17,12 @@ import {
   ChevronLeft,
   X,
   Trash2,
-  Menu,
   Sparkles,
   Download,
-  CheckSquare
+  Upload,
+  CheckSquare,
+  Globe,
+  Edit2
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
@@ -36,37 +39,75 @@ export default function Sidebar() {
   const createScene = useAreaStore((state) => state.createScene);
   const setActiveScene = useAreaStore((state) => state.setActiveScene);
   const deleteScene = useAreaStore((state) => state.deleteScene);
+  const todoLists = useTodoStore((state) => state.lists);
+  const activeTodoListId = useTodoStore((state) => state.activeListId);
+  const createTodoList = useTodoStore((state) => state.createList);
+  const setActiveTodoList = useTodoStore((state) => state.setActiveList);
+  const deleteTodoList = useTodoStore((state) => state.deleteList);
+  const updateTodoList = useTodoStore((state) => state.updateList);
   const clearAllNotes = useCanvasStore((state) => state.clearAll);
   const exportNotes = useCanvasStore((state) => state.exportJSON);
+  const importNotes = useCanvasStore((state) => state.importJSON);
 
-  const handleClearAllPages = () => {
-    const deletePage = usePagesStore.getState().deletePage;
-    const pages = usePagesStore.getState().pages;
-    pages.forEach(page => deletePage(page.id));
+  const downloadJson = (filename: string, json: string) => {
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
-  const handleExportPages = () => {
+  const pickJsonFile = (onText: (text: string) => void) => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'application/json,.json';
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (!file) return;
+      const text = await file.text();
+      onText(text);
+    };
+    input.click();
+  };
+
+  const exportPages = () => {
     const state = usePagesStore.getState();
-    return JSON.stringify({
-      pages: state.pages,
-      activePageId: state.activePageId,
-      exportedAt: Date.now(),
-    });
+    return JSON.stringify({ pages: state.pages, activePageId: state.activePageId, exportedAt: Date.now() });
   };
 
-  const handleClearAllScenes = () => {
-    const deleteScene = useAreaStore.getState().deleteScene;
-    const scenes = useAreaStore.getState().scenes;
-    scenes.forEach(scene => deleteScene(scene.id));
+  const importPages = (jsonText: string) => {
+    const parsed = JSON.parse(jsonText);
+    const pages = Array.isArray(parsed.pages) ? parsed.pages : [];
+    const activePageId = typeof parsed.activePageId === 'string' ? parsed.activePageId : null;
+    usePagesStore.setState({ pages, activePageId });
+    usePagesStore.getState().saveToStorage();
   };
 
-  const handleExportScenes = () => {
+  const exportArea = () => {
     const state = useAreaStore.getState();
-    return JSON.stringify({
-      scenes: state.scenes,
-      activeSceneId: state.activeSceneId,
-      exportedAt: Date.now(),
-    });
+    return JSON.stringify({ scenes: state.scenes, activeSceneId: state.activeSceneId, exportedAt: Date.now() });
+  };
+
+  const importArea = (jsonText: string) => {
+    const parsed = JSON.parse(jsonText);
+    const scenes = Array.isArray(parsed.scenes) ? parsed.scenes : [];
+    const activeSceneId = typeof parsed.activeSceneId === 'string' ? parsed.activeSceneId : null;
+    useAreaStore.setState({ scenes, activeSceneId });
+    useAreaStore.getState().saveToStorage();
+  };
+
+  const exportTodo = () => {
+    const state = useTodoStore.getState();
+    return JSON.stringify({ lists: state.lists, activeListId: state.activeListId, exportedAt: Date.now() });
+  };
+
+  const importTodo = (jsonText: string) => {
+    const parsed = JSON.parse(jsonText);
+    const lists = Array.isArray(parsed.lists) ? parsed.lists : [];
+    const activeListId = typeof parsed.activeListId === 'string' ? parsed.activeListId : null;
+    useTodoStore.setState({ lists, activeListId });
   };
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -89,11 +130,6 @@ export default function Sidebar() {
   const handleDeletePage = (e: React.MouseEvent, pageId: string) => {
     e.stopPropagation();
 
-    if (pages.length <= 1) {
-      alert('Cannot delete the last page. Create a new page first.');
-      return;
-    }
-
     const pageToDelete = pages.find(p => p.id === pageId);
     if (pageToDelete && window.confirm(`Are you sure you want to delete "${pageToDelete.title}"?`)) {
       deletePage(pageId);
@@ -109,13 +145,28 @@ export default function Sidebar() {
     setActiveScene(sceneId);
   };
 
+  const handleTodoListClick = (listId: string) => {
+    setActiveTodoList(listId);
+  };
+
+  const handleDeleteTodoList = (e: React.MouseEvent, listId: string) => {
+    e.stopPropagation();
+    const listToDelete = todoLists.find((l) => l.id === listId);
+    if (listToDelete && window.confirm(`Are you sure you want to delete "${listToDelete.title}"?`)) {
+      deleteTodoList(listId);
+    }
+  };
+
+  const handleRenameTodoList = (e: React.MouseEvent, listId: string) => {
+    e.stopPropagation();
+    const list = todoLists.find((l) => l.id === listId);
+    if (!list) return;
+    const next = window.prompt('Todo list title', list.title);
+    if (next !== null) updateTodoList(listId, { title: next });
+  };
+
   const handleDeleteScene = (e: React.MouseEvent, sceneId: string) => {
     e.stopPropagation();
-
-    if (scenes.length <= 1) {
-      alert('Cannot delete the last scene. Create a new scene first.');
-      return;
-    }
 
     const sceneToDelete = scenes.find(s => s.id === sceneId);
     if (sceneToDelete && window.confirm(`Are you sure you want to delete "${sceneToDelete.title}"?`)) {
@@ -136,6 +187,98 @@ export default function Sidebar() {
   };
 
   const activePage = pages.find((p) => p.id === activePageId);
+
+  type NavItemConfig = {
+    key: string;
+    label: string;
+    title?: string;
+    icon: React.ComponentType<{ size?: number }>;
+    mode?: AppMode;
+    onClick?: () => void;
+    visible?: boolean;
+  };
+
+  type NavSectionConfig = {
+    key: 'pages' | 'area' | 'todo';
+    label: string;
+    icon: React.ComponentType<{ size?: number }>;
+    mode: Extract<AppMode, 'pages' | 'area' | 'todo'>;
+  };
+
+  const topNavItems: NavItemConfig[] = [
+    {
+      key: 'world-time',
+      label: 'World Time',
+      title: 'World Time',
+      icon: Globe,
+      mode: 'world-time',
+      onClick: () => handleModeSwitch('world-time'),
+    },
+  ];
+
+  const sections: NavSectionConfig[] = [
+    { key: 'todo', label: 'Todo', icon: CheckSquare, mode: 'todo' },
+    { key: 'pages', label: 'Pages', icon: FileText, mode: 'pages' },
+    { key: 'area', label: 'Area', icon: PenTool, mode: 'area' },
+  ];
+
+  const midNavItems: NavItemConfig[] = [
+    {
+      key: 'sticky-notes',
+      label: 'Sticky Notes',
+      title: 'Sticky Notes',
+      icon: StickyNote,
+      mode: 'sticky-notes',
+      onClick: () => handleModeSwitch('sticky-notes'),
+    },
+  ];
+
+  const modeActions: NavItemConfig[] = [
+    {
+      key: 'new-page',
+      label: 'New Page',
+      title: 'New Page',
+      icon: Plus,
+      visible: mode === 'pages',
+      onClick: handleCreatePage,
+    },
+    {
+      key: 'new-scene',
+      label: 'New Scene',
+      title: 'New Scene',
+      icon: Plus,
+      visible: mode === 'area',
+      onClick: handleCreateScene,
+    },
+    {
+      key: 'new-todo-list',
+      label: 'New Todo',
+      title: 'New Todo',
+      icon: Plus,
+      visible: mode === 'todo',
+      onClick: () => {
+        const newId = createTodoList();
+        setActiveTodoList(newId);
+      },
+    },
+  ];
+
+  const bottomNavItems: NavItemConfig[] = [
+    {
+      key: 'shortcuts',
+      label: 'Shortcuts',
+      title: 'Shortcuts',
+      icon: Keyboard,
+      onClick: () => setShowShortcuts(!showShortcuts),
+    },
+    {
+      key: 'settings',
+      label: 'Settings',
+      title: 'Settings',
+      icon: Settings,
+      onClick: () => setShowSettings(!showSettings),
+    },
+  ];
 
   return (
     <div className={`sidebar-container ${isExpanded ? 'expanded' : 'collapsed'}`}>
@@ -160,221 +303,217 @@ export default function Sidebar() {
 
       {/* Navigation Items */}
       <div className="sidebar-nav">
-        {/* Sticky Notes Mode */}
-        <button
-          onClick={() => handleModeSwitch('sticky-notes')}
-          className={`nav-item ${mode === 'sticky-notes' ? 'active' : ''}`}
-          title={!isExpanded ? 'Sticky Notes' : ''}
-        >
-          <div className="nav-icon-wrapper">
-            <StickyNote size={20} />
-          </div>
-          {isExpanded && <span className="nav-label">Sticky Notes</span>}
-        </button>
-
-        {/* Pages Mode */}
-        <div className="nav-section">
-          <div
-            className={`nav-item ${mode === 'pages' ? 'active' : ''}`}
-            title={!isExpanded ? 'Pages' : ''}
-          >
+        {topNavItems.map((item) => {
+          const Icon = item.icon;
+          const active = item.mode ? mode === item.mode : false;
+          return (
             <button
-              onClick={() => {
-                handleModeSwitch('pages');
-                if (!expandedSections.has('pages')) {
-                  toggleSection('pages');
-                }
-              }}
-              className="nav-item-button"
+              key={item.key}
+              onClick={item.onClick}
+              className={`nav-item ${active ? 'active' : ''}`}
+              title={!isExpanded ? item.title || item.label : ''}
             >
               <div className="nav-icon-wrapper">
-                <FileText size={20} />
+                <Icon size={20} />
               </div>
-              {isExpanded && <span className="nav-label">Pages</span>}
+              {isExpanded && <span className="nav-label">{item.label}</span>}
             </button>
-            {isExpanded && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleSection('pages');
-                }}
-                className="nav-expand-btn"
-              >
-                {expandedSections.has('pages') ? '−' : '+'}
-              </button>
-            )}
-          </div>
+          );
+        })}
 
-          {/* Pages List (sub-items) */}
-          {isExpanded && expandedSections.has('pages') && mode === 'pages' && (
-            <div className="nav-subitems">
-              {pages.length === 0 ? (
-                <div className="nav-subitem empty">
-                  <span>No pages</span>
-                </div>
-              ) : (
-                pages.map((page) => (
-                  <div
-                    key={page.id}
-                    onClick={() => handlePageClick(page.id)}
-                    className={`nav-subitem group ${activePageId === page.id ? 'active' : ''}`}
-                  >
-                    <FileText size={16} className="nav-subitem-icon" />
-                    <span className="nav-subitem-label">{page.title}</span>
-                    {pages.length > 1 && (
-                      <button
-                        onClick={(e) => handleDeletePage(e, page.id)}
-                        className="nav-subitem-delete"
-                        title="Delete page"
-                      >
-                        <Trash2 size={12} />
-                      </button>
-                    )}
+        {sections.map((section) => {
+          const Icon = section.icon;
+          const isActive = mode === section.mode;
+          const isOpen = expandedSections.has(section.key);
+
+          return (
+            <div key={section.key} className="nav-section">
+              <div
+                className={`nav-item ${isActive ? 'active' : ''}`}
+                title={!isExpanded ? section.label : ''}
+              >
+                <button
+                  onClick={() => {
+                    handleModeSwitch(section.mode);
+                    if (!expandedSections.has(section.key)) {
+                      toggleSection(section.key);
+                    }
+                  }}
+                  className="nav-item-button"
+                >
+                  <div className="nav-icon-wrapper">
+                    <Icon size={20} />
                   </div>
-                ))
+                  {isExpanded && <span className="nav-label">{section.label}</span>}
+                </button>
+                {isExpanded && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleSection(section.key);
+                    }}
+                    className="nav-expand-btn"
+                  >
+                    {isOpen ? '−' : '+'}
+                  </button>
+                )}
+              </div>
+
+              {/* Section sub-items */}
+              {isExpanded && isOpen && isActive && section.key === 'pages' && (
+                <div className="nav-subitems">
+                  {pages.length === 0 ? (
+                    <div className="nav-subitem empty">
+                      <span>No pages</span>
+                    </div>
+                  ) : (
+                    pages.map((page) => (
+                      <div
+                        key={page.id}
+                        onClick={() => handlePageClick(page.id)}
+                        className={`nav-subitem group ${activePageId === page.id ? 'active' : ''}`}
+                      >
+                        <FileText size={16} className="nav-subitem-icon" />
+                        <span className="nav-subitem-label">{page.title}</span>
+                        <button
+                          onClick={(e) => handleDeletePage(e, page.id)}
+                          className="nav-subitem-delete"
+                          title="Delete page"
+                        >
+                          <Trash2 size={12} />
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
+
+              {isExpanded && isOpen && isActive && section.key === 'area' && (
+                <div className="nav-subitems">
+                  {scenes.length === 0 ? (
+                    <div className="nav-subitem empty">
+                      <span>No scenes</span>
+                    </div>
+                  ) : (
+                    scenes.map((scene) => (
+                      <div
+                        key={scene.id}
+                        onClick={() => handleSceneClick(scene.id)}
+                        className={`nav-subitem group ${activeSceneId === scene.id ? 'active' : ''}`}
+                      >
+                        <PenTool size={16} className="nav-subitem-icon" />
+                        <span className="nav-subitem-label">{scene.title}</span>
+                        <button
+                          onClick={(e) => handleDeleteScene(e, scene.id)}
+                          className="nav-subitem-delete"
+                          title="Delete scene"
+                        >
+                          <Trash2 size={12} />
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
+
+              {isExpanded && isOpen && isActive && section.key === 'todo' && (
+                <div className="nav-subitems">
+                  {todoLists.length === 0 ? (
+                    <div className="nav-subitem empty">
+                      <span>No todo lists</span>
+                    </div>
+                  ) : (
+                    todoLists.map((list) => (
+                      <div
+                        key={list.id}
+                        onClick={() => handleTodoListClick(list.id)}
+                        className={`nav-subitem group ${activeTodoListId === list.id ? 'active' : ''}`}
+                      >
+                        <CheckSquare size={16} className="nav-subitem-icon" />
+                        <span className="nav-subitem-label">{list.title}</span>
+                        <div className="flex items-center gap-1 ml-auto">
+                          <button
+                            onClick={(e) => handleRenameTodoList(e, list.id)}
+                            className="nav-subitem-delete"
+                            title="Rename todo"
+                          >
+                            <Edit2 size={12} />
+                          </button>
+                          <button
+                            onClick={(e) => handleDeleteTodoList(e, list.id)}
+                            className="nav-subitem-delete"
+                            title="Delete todo"
+                          >
+                            <Trash2 size={12} />
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
               )}
             </div>
-          )}
-        </div>
+          );
+        })}
 
-        {/* Area Mode */}
-        <div className="nav-section">
-          <div
-            className={`nav-item ${mode === 'area' ? 'active' : ''}`}
-            title={!isExpanded ? 'Area' : ''}
-          >
+        {midNavItems.map((item) => {
+          const Icon = item.icon;
+          const active = item.mode ? mode === item.mode : false;
+          return (
             <button
-              onClick={() => {
-                handleModeSwitch('area');
-                if (!expandedSections.has('area')) {
-                  toggleSection('area');
-                }
-              }}
-              className="nav-item-button"
+              key={item.key}
+              onClick={item.onClick}
+              className={`nav-item ${active ? 'active' : ''}`}
+              title={!isExpanded ? item.title || item.label : ''}
             >
               <div className="nav-icon-wrapper">
-                <PenTool size={20} />
+                <Icon size={20} />
               </div>
-              {isExpanded && <span className="nav-label">Area</span>}
+              {isExpanded && <span className="nav-label">{item.label}</span>}
             </button>
-            {isExpanded && (
+          );
+        })}
+
+        {modeActions
+          .filter((a) => a.visible)
+          .map((item) => {
+            const Icon = item.icon;
+            return (
               <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleSection('area');
-                }}
-                className="nav-expand-btn"
+                key={item.key}
+                onClick={item.onClick}
+                className="nav-item"
+                title={!isExpanded ? item.title || item.label : ''}
               >
-                {expandedSections.has('area') ? '−' : '+'}
-              </button>
-            )}
-          </div>
-
-          {/* Scenes List (sub-items) */}
-          {isExpanded && expandedSections.has('area') && mode === 'area' && (
-            <div className="nav-subitems">
-              {scenes.length === 0 ? (
-                <div className="nav-subitem empty">
-                  <span>No scenes</span>
+                <div className="nav-icon-wrapper">
+                  <Icon size={20} />
                 </div>
-              ) : (
-                scenes.map((scene) => (
-                  <div
-                    key={scene.id}
-                    onClick={() => handleSceneClick(scene.id)}
-                    className={`nav-subitem group ${activeSceneId === scene.id ? 'active' : ''}`}
-                  >
-                    <PenTool size={16} className="nav-subitem-icon" />
-                    <span className="nav-subitem-label">{scene.title}</span>
-                    {scenes.length > 1 && (
-                      <button
-                        onClick={(e) => handleDeleteScene(e, scene.id)}
-                        className="nav-subitem-delete"
-                        title="Delete scene"
-                      >
-                        <Trash2 size={12} />
-                      </button>
-                    )}
-                  </div>
-                ))
-              )}
-            </div>
-          )}
-        </div>
+                {isExpanded && (
+                  <>
+                    <span className="nav-label">{item.label}</span>
+                    <span className="nav-expand-btn">+</span>
+                  </>
+                )}
+              </button>
+            );
+          })}
 
-        {/* Todo Mode */}
-        <button
-          onClick={() => handleModeSwitch('todo')}
-          className={`nav-item ${mode === 'todo' ? 'active' : ''}`}
-          title={!isExpanded ? 'Todo' : ''}
-        >
-          <div className="nav-icon-wrapper">
-            <CheckSquare size={20} />
-          </div>
-          {isExpanded && <span className="nav-label">Todo</span>}
-        </button>
-
-        {/* Create Page (only in Pages mode) */}
-        {mode === 'pages' && (
-          <button
-            onClick={handleCreatePage}
-            className="nav-item"
-            title={!isExpanded ? 'New Page' : ''}
-          >
-            <div className="nav-icon-wrapper">
-              <Plus size={20} />
-            </div>
-            {isExpanded && (
-              <>
-                <span className="nav-label">New Page</span>
-                <span className="nav-expand-btn">+</span>
-              </>
-            )}
-          </button>
-        )}
-
-        {/* Create Scene (only in Area mode) */}
-        {mode === 'area' && (
-          <button
-            onClick={handleCreateScene}
-            className="nav-item"
-            title={!isExpanded ? 'New Scene' : ''}
-          >
-            <div className="nav-icon-wrapper">
-              <Plus size={20} />
-            </div>
-            {isExpanded && (
-              <>
-                <span className="nav-label">New Scene</span>
-                <span className="nav-expand-btn">+</span>
-              </>
-            )}
-          </button>
-        )}
-
-        {/* Shortcuts */}
-        <button
-          onClick={() => setShowShortcuts(!showShortcuts)}
-          className="nav-item"
-          title={!isExpanded ? 'Shortcuts' : ''}
-        >
-          <div className="nav-icon-wrapper">
-            <Keyboard size={20} />
-          </div>
-          {isExpanded && <span className="nav-label">Shortcuts</span>}
-        </button>
-
-        {/* Settings */}
-        <button
-          onClick={() => setShowSettings(!showSettings)}
-          className="nav-item"
-          title={!isExpanded ? 'Settings' : ''}
-        >
-          <div className="nav-icon-wrapper">
-            <Settings size={20} />
-          </div>
-          {isExpanded && <span className="nav-label">Settings</span>}
-        </button>
+        {bottomNavItems.map((item) => {
+          const Icon = item.icon;
+          return (
+            <button
+              key={item.key}
+              onClick={item.onClick}
+              className="nav-item"
+              title={!isExpanded ? item.title || item.label : ''}
+            >
+              <div className="nav-icon-wrapper">
+                <Icon size={20} />
+              </div>
+              {isExpanded && <span className="nav-label">{item.label}</span>}
+            </button>
+          );
+        })}
       </div>
 
       {/* Shortcuts Modal */}
@@ -442,54 +581,7 @@ export default function Sidebar() {
                 <h4 className="settings-section-title">Data Management</h4>
                 <button
                   onClick={() => {
-                    if (window.confirm('Are you sure you want to clear all sticky notes? This cannot be undone.')) {
-                      clearAllNotes();
-                      setShowSettings(false);
-                    }
-                  }}
-                  className="settings-btn danger"
-                >
-                  <Trash2 size={16} />
-                  <span>Clear All Sticky Notes</span>
-                </button>
-                {mode === 'pages' && (
-                  <button
-                    onClick={() => {
-                      if (window.confirm('Are you sure you want to clear all pages? This cannot be undone.')) {
-                        handleClearAllPages();
-                        setShowSettings(false);
-                      }
-                    }}
-                    className="settings-btn danger"
-                  >
-                    <Trash2 size={16} />
-                    <span>Clear All Pages</span>
-                  </button>
-                )}
-                {mode === 'area' && (
-                  <button
-                    onClick={() => {
-                      if (window.confirm('Are you sure you want to clear all scenes? This cannot be undone.')) {
-                        handleClearAllScenes();
-                        setShowSettings(false);
-                      }
-                    }}
-                    className="settings-btn danger"
-                  >
-                    <Trash2 size={16} />
-                    <span>Clear All Scenes</span>
-                  </button>
-                )}
-                <button
-                  onClick={() => {
-                    const json = exportNotes();
-                    const blob = new Blob([json], { type: 'application/json' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `sticky-notes-${Date.now()}.json`;
-                    a.click();
-                    URL.revokeObjectURL(url);
+                    downloadJson(`sticky-notes-${Date.now()}.json`, exportNotes());
                     setShowSettings(false);
                   }}
                   className="settings-btn"
@@ -497,44 +589,107 @@ export default function Sidebar() {
                   <Download size={16} />
                   <span>Export Sticky Notes</span>
                 </button>
-                {mode === 'pages' && (
-                  <button
-                    onClick={() => {
-                      const json = handleExportPages();
-                      const blob = new Blob([json], { type: 'application/json' });
-                      const url = URL.createObjectURL(blob);
-                      const a = document.createElement('a');
-                      a.href = url;
-                      a.download = `pages-${Date.now()}.json`;
-                      a.click();
-                      URL.revokeObjectURL(url);
-                      setShowSettings(false);
-                    }}
-                    className="settings-btn"
-                  >
-                    <Download size={16} />
-                    <span>Export Pages</span>
-                  </button>
-                )}
-                {mode === 'area' && (
-                  <button
-                    onClick={() => {
-                      const json = handleExportScenes();
-                      const blob = new Blob([json], { type: 'application/json' });
-                      const url = URL.createObjectURL(blob);
-                      const a = document.createElement('a');
-                      a.href = url;
-                      a.download = `scenes-${Date.now()}.json`;
-                      a.click();
-                      URL.revokeObjectURL(url);
-                      setShowSettings(false);
-                    }}
-                    className="settings-btn"
-                  >
-                    <Download size={16} />
-                    <span>Export Scenes</span>
-                  </button>
-                )}
+                <button
+                  onClick={() => {
+                    pickJsonFile((text) => {
+                      try {
+                        importNotes(text);
+                        setShowSettings(false);
+                      } catch (e) {
+                        alert('Invalid sticky notes JSON file.');
+                        console.error(e);
+                      }
+                    });
+                  }}
+                  className="settings-btn"
+                >
+                  <Upload size={16} />
+                  <span>Import Sticky Notes</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    downloadJson(`pages-${Date.now()}.json`, exportPages());
+                    setShowSettings(false);
+                  }}
+                  className="settings-btn"
+                >
+                  <Download size={16} />
+                  <span>Export Pages</span>
+                </button>
+                <button
+                  onClick={() => {
+                    pickJsonFile((text) => {
+                      try {
+                        importPages(text);
+                        setShowSettings(false);
+                      } catch (e) {
+                        alert('Invalid pages JSON file.');
+                        console.error(e);
+                      }
+                    });
+                  }}
+                  className="settings-btn"
+                >
+                  <Upload size={16} />
+                  <span>Import Pages</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    downloadJson(`area-${Date.now()}.json`, exportArea());
+                    setShowSettings(false);
+                  }}
+                  className="settings-btn"
+                >
+                  <Download size={16} />
+                  <span>Export Area</span>
+                </button>
+                <button
+                  onClick={() => {
+                    pickJsonFile((text) => {
+                      try {
+                        importArea(text);
+                        setShowSettings(false);
+                      } catch (e) {
+                        alert('Invalid area JSON file.');
+                        console.error(e);
+                      }
+                    });
+                  }}
+                  className="settings-btn"
+                >
+                  <Upload size={16} />
+                  <span>Import Area</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    downloadJson(`todo-${Date.now()}.json`, exportTodo());
+                    setShowSettings(false);
+                  }}
+                  className="settings-btn"
+                >
+                  <Download size={16} />
+                  <span>Export Todo</span>
+                </button>
+                <button
+                  onClick={() => {
+                    pickJsonFile((text) => {
+                      try {
+                        importTodo(text);
+                        setShowSettings(false);
+                      } catch (e) {
+                        alert('Invalid todo JSON file.');
+                        console.error(e);
+                      }
+                    });
+                  }}
+                  className="settings-btn"
+                >
+                  <Upload size={16} />
+                  <span>Import Todo</span>
+                </button>
               </div>
             </div>
           </div>

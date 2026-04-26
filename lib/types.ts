@@ -56,11 +56,12 @@ export interface CanvasStore extends CanvasState {
 }
 
 // Pages Mode Types
-export type AppMode = 'sticky-notes' | 'pages' | 'area' | 'todo';
+export type AppMode = 'sticky-notes' | 'pages' | 'area' | 'todo' | 'world-time';
 
 export interface Page {
   id: string;
   title: string;
+  titleMode?: 'auto' | 'custom';
   content: string; // HTML content
   createdAt: number;
   updatedAt: number;

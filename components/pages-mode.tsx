@@ -32,14 +32,6 @@ export default function PagesMode() {
 
   const activePage = pages.find((p) => p.id === activePageId);
 
-  // Auto-create page if none exist
-  useEffect(() => {
-    if (pages.length === 0) {
-      const createPage = usePagesStore.getState().createPage;
-      createPage();
-    }
-  }, [pages.length]);
-
   // Initialize editor content
   useEffect(() => {
     if (editorRef.current && activePage) {
@@ -147,7 +139,7 @@ export default function PagesMode() {
   };
 
   const handleDelete = () => {
-    if (!activePage || pages.length <= 1) return;
+    if (!activePage) return;
 
     if (window.confirm(`Are you sure you want to delete "${activePage.title}"?`)) {
       deletePage(activePage.id);

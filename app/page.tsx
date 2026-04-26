@@ -12,6 +12,7 @@ import Sidebar from '@/components/sidebar';
 import PagesMode from '@/components/pages-mode';
 import AreaMode from '@/components/area-mode';
 import TodoMode from '@/components/todo-mode';
+import WorldTimeMode from '@/components/world-time-mode';
 
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
@@ -97,7 +98,19 @@ export default function Home() {
   return (
     <div className="app-container">
       <Sidebar />
-      <main className={`content-area ${mode === 'pages' ? 'pages-mode' : mode === 'area' ? 'area-mode' : mode === 'todo' ? 'todo-mode' : 'sticky-notes-mode'}`}>
+      <main
+        className={`content-area ${
+          mode === 'pages'
+            ? 'pages-mode'
+            : mode === 'area'
+              ? 'area-mode'
+              : mode === 'todo'
+                ? 'todo-mode'
+                : mode === 'world-time'
+                  ? 'world-time-mode'
+                  : 'sticky-notes-mode'
+        }`}
+      >
         {mode === 'sticky-notes' ? (
           <>
             <Canvas />
@@ -107,6 +120,8 @@ export default function Home() {
           <PagesMode />
         ) : mode === 'area' ? (
           <AreaMode />
+        ) : mode === 'world-time' ? (
+          <WorldTimeMode />
         ) : (
           <TodoMode />
         )}

@@ -9,6 +9,35 @@ const generatePageId = () => `page_${Date.now()}_${Math.random().toString(36).su
 
 let saveDebounceTimer: NodeJS.Timeout | null = null;
 
+function computeAutoTitle(html: string, maxLetters = 10) {
+  const withoutTags = (html || '').replace(/<[^>]*>/g, '');
+  const normalized = withoutTags
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/\u00a0/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  // Keep spaces between words, but limit by letter count (A-Z).
+  let letterCount = 0;
+  let out = '';
+  for (const ch of normalized) {
+    const isLetter = /[A-Za-z]/.test(ch);
+    if (isLetter) {
+      if (letterCount >= maxLetters) break;
+      letterCount += 1;
+      out += ch;
+      continue;
+    }
+    // Preserve single spaces only if we've started and still building the title.
+    if (ch === ' ' && out && !out.endsWith(' ') && letterCount < maxLetters) {
+      out += ' ';
+    }
+  }
+
+  const title = out.trim();
+  return title || 'Untitled';
+}
+
 export const usePagesStore = create<PagesStore>((set, get) => ({
   pages: [],
   activePageId: null,
@@ -18,6 +47,7 @@ export const usePagesStore = create<PagesStore>((set, get) => ({
     const newPage: Page = {
       id,
       title: 'Untitled',
+      titleMode: 'auto',
       content: '',
       createdAt: Date.now(),
       updatedAt: Date.now(),
@@ -35,26 +65,36 @@ export const usePagesStore = create<PagesStore>((set, get) => ({
   updatePage: (id: string, updates: Partial<Page>) => {
     set((state) => ({
       pages: state.pages.map((page) =>
-        page.id === id ? { ...page, ...updates, updatedAt: Date.now() } : page
+        page.id === id
+          ? {
+              ...page,
+              ...updates,
+              titleMode:
+                updates.title !== undefined
+                  ? (updates.title || '').trim()
+                    ? 'custom'
+                    : 'auto'
+                  : page.titleMode ?? 'auto',
+              updatedAt: Date.now(),
+            }
+          : page
       ),
     }));
 
-    // Auto-update title from first line of content if content changed
+    // Auto-update title from content only if user didn't set a custom title
     if (updates.content !== undefined) {
       const page = get().pages.find((p) => p.id === id);
       if (page) {
-        const firstLine = updates.content
-          .replace(/<[^>]*>/g, '') // Remove HTML tags
-          .split('\n')[0]
-          .trim()
-          .substring(0, 50);
-        const newTitle = firstLine || 'Untitled';
-        if (newTitle !== page.title) {
-          set((state) => ({
-            pages: state.pages.map((p) =>
-              p.id === id ? { ...p, title: newTitle } : p
-            ),
-          }));
+        const titleMode = page.titleMode ?? 'auto';
+        if (titleMode !== 'custom') {
+          const newTitle = computeAutoTitle(updates.content, 10);
+          if (newTitle !== page.title) {
+            set((state) => ({
+              pages: state.pages.map((p) =>
+                p.id === id ? { ...p, title: newTitle, titleMode: 'auto' } : p
+              ),
+            }));
+          }
         }
       }
     }
@@ -94,7 +134,10 @@ export const usePagesStore = create<PagesStore>((set, get) => ({
       if (stored) {
         const data = JSON.parse(stored);
         set({
-          pages: data.pages || [],
+          pages: (data.pages || []).map((p: Page) => ({
+            ...p,
+            titleMode: p.titleMode ?? 'auto',
+          })),
           activePageId: data.activePageId || null,
         });
       }

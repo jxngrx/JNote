@@ -393,6 +393,121 @@
   overflow-y: auto;
 }
 
+.content-area.world-time-mode {
+  background: #0c0c0c;
+  overflow-y: auto;
+}
+
+/* World Time (Year-in-Dots) Mode - pixel-perfect port */
+.year-dots-body {
+  background: #0c0c0c;
+  color: #f5f5f5;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+}
+
+.year-dots-wrapper {
+  max-width: 900px;
+  width: 100%;
+  text-align: center;
+}
+
+.year-dots-h1 {
+  font-size: clamp(32px, 6vw, 72px);
+  font-weight: 700;
+  letter-spacing: -2px;
+  margin-bottom: 10px;
+}
+
+.year-dots-sub {
+  color: #888;
+  margin-bottom: 50px;
+  font-size: 18px;
+}
+
+.year-dots-stats {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  margin-bottom: 60px;
+  flex-wrap: wrap;
+}
+
+.year-dots-stat-value {
+  font-size: 42px;
+  margin-bottom: 8px;
+}
+
+.year-dots-stat-label {
+  color: #888;
+}
+
+.year-dots-grid {
+  --yd-filled: #7cff5b;
+  --yd-empty: #2a2a33;
+  --yd-dot: 12px;
+  --yd-gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(19, var(--yd-dot));
+  gap: var(--yd-gap);
+  justify-content: center;
+}
+
+.year-dots-dot {
+  width: var(--yd-dot);
+  height: var(--yd-dot);
+  border-radius: 50%;
+  background: var(--yd-empty);
+  transform: scale(0.5);
+  opacity: 0.35;
+  animation: yearDotsShow 0.5s ease forwards;
+}
+
+.year-dots-dot.filled {
+  background: var(--yd-filled);
+  opacity: 1;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--yd-filled) 55%, transparent);
+}
+
+@keyframes yearDotsShow {
+  to {
+    transform: scale(1);
+  }
+}
+
+.year-dots-tooltip {
+  margin-top: 35px;
+  color: #888;
+}
+
+.year-dots-progress-bar {
+  width: min(500px, 90%);
+  height: 10px;
+  background: #1a1a21;
+  margin: 35px auto 0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.year-dots-progress {
+  height: 100%;
+  width: 0;
+  background: #7cff5b;
+  transition: 1.4s ease;
+}
+
+@media (max-width: 700px) {
+  .year-dots-grid {
+    --yd-dot: 10px;
+    --yd-gap: 6px;
+    grid-template-columns: repeat(15, var(--yd-dot));
+  }
+}
+
 /* Sidebar Styles - Black Theme */
 .sidebar-container {
   @apply h-full flex flex-col relative;
