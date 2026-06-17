@@ -125,6 +125,8 @@ export default function AppSidebar({
         .filter(Boolean)
         .join(' ')}
       onClick={item.onClick}
+      onMouseEnter={item.onMouseEnter}
+      onMouseLeave={item.onMouseLeave}
       onContextMenu={item.onContextMenu}
       title={settings.sidebarCollapsed || !settings.showLabels ? item.label : undefined}
       aria-label={item.label}

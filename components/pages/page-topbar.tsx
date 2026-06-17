@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { Editor } from '@tiptap/core';
 import type { PageFontFamily, PageViewMode, PageWidth } from '@/lib/types';
+import type { PagePdfExportOptions } from '@/lib/pages-export-pdf';
 import {
   PAGE_FONT_GROUPS,
   PAGE_FONTS,
@@ -11,7 +12,7 @@ import {
 } from '@/lib/page-fonts';
 import { applyPageFontToEditor } from '@/lib/page-font-utils';
 import { usePageFontLoader } from '@/hooks/use-page-font-loader';
-import { Hash } from 'lucide-react';
+import { Hash, FileDown, ChevronDown } from 'lucide-react';
 
 const SHOW_NOTEBOOK_MODE = false;
 
@@ -27,6 +28,8 @@ type PageTopbarProps = {
   onViewModeChange: (value: PageViewMode) => void;
   showLineNumbers: boolean;
   onShowLineNumbersChange: (value: boolean) => void;
+  onExportPdf?: (options: PagePdfExportOptions) => void;
+  exportPdfBusy?: boolean;
 };
 
 function countCharacters(editor: Editor | null): number {
@@ -59,9 +62,13 @@ export function PageTopbar({
   onViewModeChange,
   showLineNumbers,
   onShowLineNumbersChange,
+  onExportPdf,
+  exportPdfBusy = false,
 }: PageTopbarProps) {
   const [charCount, setCharCount] = useState(0);
   const [displayFont, setDisplayFont] = useState<PageFontId>(normalizePageFontId(fontFamily));
+  const [exportMenuOpen, setExportMenuOpen] = useState(false);
+  const exportMenuRef = useRef<HTMLDivElement>(null);
 
   const pageFont = normalizePageFontId(fontFamily);
   usePageFontLoader(pageFont);
@@ -88,6 +95,27 @@ export function PageTopbar({
   useEffect(() => {
     setDisplayFont(resolveActiveFontId(editor, pageFont));
   }, [editor, pageFont, fontFamily]);
+
+  useEffect(() => {
+    if (!exportMenuOpen) return;
+
+    const onPointerDown = (event: MouseEvent) => {
+      if (!exportMenuRef.current?.contains(event.target as Node)) {
+        setExportMenuOpen(false);
+      }
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setExportMenuOpen(false);
+    };
+
+    window.addEventListener('mousedown', onPointerDown);
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      window.removeEventListener('mousedown', onPointerDown);
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [exportMenuOpen]);
 
   const handleFontChange = (nextId: PageFontId) => {
     if (editor) {
@@ -153,6 +181,47 @@ export function PageTopbar({
       ) : null}
 
       <div className="page-topbar-right">
+        {onExportPdf ? (
+          <div className="page-topbar-export-menu" ref={exportMenuRef}>
+            <button
+              type="button"
+              className="page-topbar-export-btn"
+              onClick={() => onExportPdf({ watermark: true })}
+              disabled={exportPdfBusy}
+              title="Export page as PDF"
+              aria-label="Export page as PDF"
+            >
+              <FileDown size={13} />
+              <span>{exportPdfBusy ? 'Exporting…' : 'PDF'}</span>
+            </button>
+            <button
+              type="button"
+              className="page-topbar-export-menu-trigger"
+              onClick={() => setExportMenuOpen((open) => !open)}
+              disabled={exportPdfBusy}
+              aria-label="More PDF export options"
+              aria-expanded={exportMenuOpen}
+              aria-haspopup="menu"
+            >
+              <ChevronDown size={12} />
+            </button>
+            {exportMenuOpen ? (
+              <div className="page-topbar-export-dropdown" role="menu">
+                <button
+                  type="button"
+                  role="menuitem"
+                  className="page-topbar-export-dropdown-item"
+                  onClick={() => {
+                    setExportMenuOpen(false);
+                    onExportPdf({ watermark: false });
+                  }}
+                >
+                  PDF without watermark
+                </button>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
         <button
           type="button"
           className={`page-topbar-line-toggle${showLineNumbers ? ' is-active' : ''}`}

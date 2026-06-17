@@ -266,6 +266,116 @@
   border-color: var(--text-primary);
 }
 
+.page-topbar-export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 100px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-2);
+  color: var(--text-primary);
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.page-topbar-export-btn:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--blue) 35%, var(--border-strong));
+  transform: translateY(-1px);
+}
+
+.page-topbar-export-btn:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.page-topbar-export-menu {
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+}
+
+.page-topbar-export-menu .page-topbar-export-btn {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: none;
+}
+
+.page-topbar-export-menu-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  padding: 0;
+  border-radius: 0 100px 100px 0;
+  border: 1px solid var(--border-strong);
+  border-left: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition:
+    color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.page-topbar-export-menu-trigger:hover:not(:disabled) {
+  color: var(--text-primary);
+  border-color: color-mix(in srgb, var(--blue) 35%, var(--border-strong));
+  background: color-mix(in srgb, var(--surface) 70%, var(--surface-2));
+}
+
+.page-topbar-export-menu-trigger:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.page-topbar-export-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 196px;
+  padding: 6px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+  z-index: 30;
+}
+
+.page-topbar-export-dropdown-item {
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.page-topbar-export-dropdown-item:hover {
+  background: var(--surface-2);
+}
+
+.page-export-error {
+  margin: 0;
+  padding: 0 24px 8px;
+  font-size: 12px;
+  color: var(--red);
+}
+
 .page-title-input {
   display: block;
   width: 100%;
@@ -620,14 +730,14 @@
 
 /* Slash menu — solid command palette */
 .page-slash-menu {
-  --slash-bg: #000000;
-  --slash-border: rgba(255, 255, 255, 0.1);
-  --slash-text: #f0ede8;
-  --slash-muted: #9a9690;
-  --slash-dim: #5f5c58;
-  --slash-hover: rgba(255, 255, 255, 0.07);
-  --slash-active: rgba(255, 255, 255, 0.11);
-  --slash-icon-bg: rgba(255, 255, 255, 0.06);
+  --slash-bg: var(--surface);
+  --slash-border: var(--border-strong);
+  --slash-text: var(--text-primary);
+  --slash-muted: var(--text-secondary);
+  --slash-dim: var(--text-tertiary);
+  --slash-hover: var(--ui-alpha-3);
+  --slash-active: var(--ui-alpha-4);
+  --slash-icon-bg: var(--ui-alpha-3);
   --slash-accent: var(--orange, #d97757);
 
   position: fixed;
@@ -638,9 +748,8 @@
   border: 1px solid var(--slash-border);
   border-radius: 16px;
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.04),
-    0 24px 64px rgba(0, 0, 0, 0.72),
-    0 8px 24px rgba(0, 0, 0, 0.48);
+    0 0 0 1px var(--ui-alpha-2),
+    var(--shadow-lg);
   overflow: hidden;
   animation: pageMenuIn 0.18s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -663,7 +772,7 @@
   justify-content: space-between;
   gap: 8px;
   padding: 10px 14px 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--ui-alpha-3);
 }
 
 .page-slash-menu-selection-label {
@@ -683,7 +792,7 @@
 
 .page-slash-menu-header {
   padding: 8px 8px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--ui-alpha-3);
 }
 
 .page-slash-menu-back {
@@ -714,7 +823,7 @@
   width: 16px;
   height: 16px;
   border-radius: 100px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid var(--ui-alpha-5);
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
 }
 
@@ -734,8 +843,8 @@
   color: var(--slash-muted);
   padding: 2px 6px;
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--ui-alpha-3);
+  border: 1px solid var(--ui-alpha-3);
 }
 
 .page-slash-menu-chevron {
@@ -750,7 +859,7 @@
   margin: 0;
   list-style: none;
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
+  scrollbar-color: var(--ui-alpha-5) transparent;
 }
 
 .page-slash-menu-list::-webkit-scrollbar {
@@ -758,7 +867,7 @@
 }
 
 .page-slash-menu-list::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.14);
+  background: var(--ui-alpha-5);
   border-radius: 100px;
 }
 
@@ -796,7 +905,7 @@
   justify-content: center;
   border-radius: 8px;
   background: var(--slash-icon-bg);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--ui-alpha-3);
   color: var(--slash-muted);
   flex-shrink: 0;
   transition: color 0.12s, border-color 0.12s, background 0.12s;
@@ -804,8 +913,8 @@
 
 .page-slash-menu-item[data-selected='true'] .page-slash-menu-icon {
   color: var(--slash-text);
-  border-color: rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--ui-alpha-4);
+  background: var(--ui-alpha-4);
 }
 
 .page-slash-menu-text {
@@ -842,8 +951,8 @@
   gap: 12px;
   flex-wrap: wrap;
   padding: 8px 14px 10px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.02);
+  border-top: 1px solid var(--ui-alpha-3);
+  background: var(--ui-alpha-1);
 }
 
 .page-slash-menu-footer-hint {
@@ -861,8 +970,8 @@
   font-weight: 500;
   padding: 2px 5px;
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--ui-alpha-3);
+  border: 1px solid var(--ui-alpha-3);
   color: var(--slash-muted);
   line-height: 1;
 }

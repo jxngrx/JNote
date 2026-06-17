@@ -1,0 +1,44 @@
+.bookmarks-dock-icon {
+  position: relative;
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+
+.bookmarks-dock-icon-sheet {
+  position: absolute;
+  left: 50%;
+  width: 12px;
+  height: 14px;
+  border: 1px solid color-mix(in srgb, var(--text-primary) 22%, transparent);
+  border-radius: 3px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--surface-2) 88%, white 12%) 0%,
+    color-mix(in srgb, var(--bg) 90%, var(--surface-2) 10%) 100%
+  );
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--text-primary) 10%, transparent);
+  transform-origin: bottom center;
+}
+
+.bookmarks-dock-icon-sheet--back {
+  bottom: 1px;
+  transform: translateX(-62%) rotate(-14deg);
+  opacity: 0.72;
+}
+
+.bookmarks-dock-icon-sheet--mid {
+  bottom: 2px;
+  transform: translateX(-50%) rotate(4deg);
+  opacity: 0.86;
+}
+
+.bookmarks-dock-icon-sheet--front {
+  bottom: 3px;
+  transform: translateX(-38%) rotate(16deg);
+}
+
+button.mag-dock-item.is-active .bookmarks-dock-icon-sheet,
+button.mag-dock-item.is-hot .bookmarks-dock-icon-sheet {
+  border-color: color-mix(in srgb, var(--text-primary) 34%, transparent);
+}

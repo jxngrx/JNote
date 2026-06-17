@@ -22,7 +22,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { motion, AnimatePresence } from 'motion/react';
-import { Check, GripVertical, Trash2 } from 'lucide-react';
+import { Check, GripVertical, Pencil, Trash2 } from 'lucide-react';
 import { createDefaultColumns, type KanbanColumn, type TodoItem } from '@/lib/todo-store';
 import { isLockedColumn } from '@/lib/todo-column-utils';
 import { useTodoUiStore } from '@/lib/todo-ui-store';
@@ -104,6 +104,7 @@ type KanbanCardProps = {
   onDiscard: () => void;
   onCommitTitle: (title: string) => void;
   onCancelEdit?: () => void;
+  onStartEdit?: () => void;
   dragHandleProps?: React.HTMLAttributes<HTMLButtonElement>;
 };
 
@@ -118,6 +119,7 @@ function KanbanCard({
   onDiscard,
   onCommitTitle,
   onCancelEdit,
+  onStartEdit,
   dragHandleProps,
 }: KanbanCardProps) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -225,7 +227,14 @@ function KanbanCard({
           />
         ) : (
           <>
-            <p className="todo-kanban-card-title" title={item.title || 'Untitled'}>
+            <p
+              className="todo-kanban-card-title"
+              title={item.title || 'Untitled'}
+              onDoubleClick={(event) => {
+                event.stopPropagation();
+                onStartEdit?.();
+              }}
+            >
               {item.title || <span className="todo-kanban-card-placeholder">Untitled</span>}
             </p>
             {timeLabel && item.title && (
@@ -235,15 +244,28 @@ function KanbanCard({
         )}
       </div>
 
-      <button
-        type="button"
-        onClick={onDelete}
-        className="todo-kanban-card-delete"
-        title="Delete task"
-        aria-label="Delete task"
-      >
-        <Trash2 size={12} />
-      </button>
+      <div className="todo-kanban-card-actions">
+        {!isEditing && item.title.trim() ? (
+          <button
+            type="button"
+            onClick={() => onStartEdit?.()}
+            className="todo-kanban-card-edit-btn"
+            title="Edit task"
+            aria-label="Edit task"
+          >
+            <Pencil size={12} />
+          </button>
+        ) : null}
+        <button
+          type="button"
+          onClick={onDelete}
+          className="todo-kanban-card-delete"
+          title="Delete task"
+          aria-label="Delete task"
+        >
+          <Trash2 size={12} />
+        </button>
+      </div>
     </motion.article>
   );
 }
@@ -257,6 +279,7 @@ type SortableKanbanCardProps = {
   onDiscard: () => void;
   onCommitTitle: (title: string) => void;
   onCancelEdit: () => void;
+  onStartEdit: () => void;
 };
 
 function SortableKanbanCard({
@@ -268,6 +291,7 @@ function SortableKanbanCard({
   onDiscard,
   onCommitTitle,
   onCancelEdit,
+  onStartEdit,
 }: SortableKanbanCardProps) {
   const {
     attributes,
@@ -295,6 +319,7 @@ function SortableKanbanCard({
         onDiscard={onDiscard}
         onCommitTitle={onCommitTitle}
         onCancelEdit={onCancelEdit}
+        onStartEdit={onStartEdit}
         dragHandleProps={{ ...attributes, ...listeners }}
       />
     </div>
@@ -448,6 +473,7 @@ function KanbanColumnPanel({
                   }}
                   onCommitTitle={(title) => handleCommitTitle(item.id, title)}
                   onCancelEdit={() => onSetEditingItem(null)}
+                  onStartEdit={() => onSetEditingItem(item.id)}
                 />
               ))}
             </AnimatePresence>

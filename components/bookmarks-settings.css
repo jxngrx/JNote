@@ -1,0 +1,98 @@
+.bookmarks-settings-preview-wrap {
+  margin-top: 16px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+}
+
+.bookmarks-settings-preview {
+  position: relative;
+  min-height: 168px;
+}
+
+.bookmarks-settings-preview--fan {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-right: 28px;
+  padding-bottom: 8px;
+}
+
+.bookmarks-settings-preview-fan-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transform: translateX(calc(var(--fan-index, 0) * 12px))
+    rotate(calc(var(--fan-index, 0) * 2.4deg));
+  transform-origin: bottom right;
+}
+
+.bookmarks-settings-preview-pill {
+  padding: 5px 12px;
+  border-radius: 100px;
+  background: color-mix(in srgb, var(--text-primary) 88%, transparent);
+  color: var(--bg);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.bookmarks-settings-preview-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--border-strong);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--surface) 90%, white 10%) 0%,
+    var(--bg) 100%
+  );
+  box-shadow: var(--shadow-sm);
+}
+
+.bookmarks-settings-preview-trigger {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.bookmarks-settings-preview--grid {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 8px;
+}
+
+.bookmarks-settings-preview-grid-row {
+  display: flex;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  box-shadow: var(--shadow-sm);
+}
+
+.bookmarks-settings-preview-grid-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 52px;
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+.bookmarks-settings-preview-grid-item .bookmarks-settings-preview-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+}

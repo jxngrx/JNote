@@ -5,7 +5,10 @@ import AppDock from '@/components/app-dock';
 import AppSidebar from '@/components/app-sidebar';
 import AppSettingsModal from '@/components/app-settings-modal';
 import TodoDockContextMenu from '@/components/todo-dock-context-menu';
+import BookmarksDockStack from '@/components/bookmarks-dock-stack';
+import GithubContributionsPanel from '@/components/github-contributions-panel';
 import { useAppNavigationItems } from '@/hooks/use-app-navigation-items';
+import { useBookmarksShortcut } from '@/hooks/use-bookmarks-shortcut';
 import { useNavigationInsets } from '@/hooks/use-navigation-insets';
 import { useNavigationSettingsStore } from '@/lib/navigation-settings-store';
 import { useSettingsUiStore } from '@/lib/settings-ui-store';
@@ -26,6 +29,7 @@ export default function AppNavigation({ children }: AppNavigationProps) {
   const closeSettings = useSettingsUiStore((s) => s.closeSettings);
 
   useNavigationInsets();
+  useBookmarksShortcut();
 
   const isAutoHideFloating =
     chrome === 'sidebar' &&
@@ -73,6 +77,8 @@ export default function AppNavigation({ children }: AppNavigationProps) {
 
       {overlaySidebar}
       {dock}
+      <BookmarksDockStack />
+      <GithubContributionsPanel />
 
       <AppSettingsModal
         open={showSettings}
