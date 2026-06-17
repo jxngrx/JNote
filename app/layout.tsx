@@ -147,8 +147,9 @@ export const metadata: Metadata = {
       'Capture ideas instantly, organize your notes, and keep everything searchable with JNote.',
   },
   icons: {
-    icon: '/globe.svg',
-    apple: '/globe.svg',
+    icon: [{ url: '/logo.png', type: 'image/png' }],
+    apple: [{ url: '/logo.png', type: 'image/png' }],
+    shortcut: ['/logo.png'],
   },
 }
 

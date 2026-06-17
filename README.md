@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="public/logo.png" alt="JNote logo" width="96" />
+
 # JNote
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -8,10 +10,9 @@
 [![Stars](https://img.shields.io/github/stars/jxngrx/notes_apps?style=social)](https://github.com/jxngrx/notes_apps/stargazers)
 [![Made with Next.js](https://img.shields.io/badge/Made%20with-Next.js%2016-black?logo=next.js)](https://nextjs.org/)
 
-[![Typing SVG](https://readme-typing-svg.herokuapp.com?font=DM+Sans&weight=500&size=22&duration=4000&pause=1200&color=1A1A1A&center=true&vCenter=true&width=520&lines=Capture+ideas.+Organize+work.+Stay+in+flow.)](https://github.com/jxngrx/notes_apps)
+[![Typing SVG](https://readme-typing-svg.herokuapp.com?font=DM+Sans&weight=500&size=22&duration=4000&pause=1200&color=FFFFFF&backgroundColor=1C1C1A&center=true&vCenter=true&width=520&lines=Capture+ideas.+Organize+work.+Stay+in+flow.)](https://github.com/jxngrx/notes_apps)
 
-<!-- TODO: replace with actual demo GIF/screenshot -->
-![JNote demo placeholder](https://placehold.co/1200x640/1C1C1A/F0EDE8?text=JNote+Demo+Screenshot+Coming+Soon)
+![JNote workspace overview](public/kanban-board-without-confetti.png)
 
 *A fast, local-first productivity workspace — sticky notes, rich pages, drawings, kanban todos, and world clocks in one app.*
 
@@ -40,36 +41,39 @@ JNote is a multi-mode productivity app. All workspace data stays in your browser
 
 Infinite canvas with pan/zoom, draggable resizable notes, pastel color picker, pinning, and JSON export/import.
 
-<!-- TODO: replace with sticky notes screenshot -->
-![Sticky notes placeholder](https://placehold.co/800x450/F5F4F0/1A1A1A?text=Sticky+Notes+Mode)
+![Sticky notes canvas](public/sticky-note.png)
+
+![Empty sticky notes canvas](public/empty-notes.png)
 
 ### Pages
 
 TipTap-powered rich text editor with slash commands, callouts, code blocks, tables, task lists, link previews, notebook view, per-page fonts/icons, and auto-titled pages.
 
-<!-- TODO: replace with pages editor screenshot -->
-![Pages editor placeholder](https://placehold.co/800x450/FFFFFF/1A1A1A?text=Pages+Editor)
-
 ### Area (Drawings)
 
 Excalidraw-based whiteboard mode with multiple scenes, autosave, and JSON export/import.
-
-<!-- TODO: replace with area mode screenshot -->
-![Area mode placeholder](https://placehold.co/800x450/111110/F0EDE8?text=Area+%2F+Excalidraw)
 
 ### Todo (Kanban)
 
 Drag-and-drop kanban board with customizable columns, recycle bin, list management, celebration effects, and optional custom completion/move sounds (IndexedDB).
 
-<!-- TODO: replace with todo kanban screenshot -->
-![Todo kanban placeholder](https://placehold.co/800x450/EDECEA/1A1A1A?text=Todo+Kanban)
+![Kanban board](public/kanban-board-without-confetti.png)
+
+![Kanban with celebration effects](public/kanban-board-with-confetti.png)
+
+![Todo grid view](public/grid-view-todo-tab.png)
 
 ### World Time & Pomodoro
 
 Interactive 3D globe (amCharts) for picking countries/timezones, floating clock widgets, focus view, and a built-in Pomodoro timer with customizable durations.
 
-<!-- TODO: replace with world time screenshot -->
-![World time placeholder](https://placehold.co/800x450/242422/F0EDE8?text=World+Time+%2B+Pomodoro)
+![World clock focus view](public/main-big-clock.png)
+
+![Add clock — globe picker](public/time-select-of-clock-main-popup.png)
+
+![Pomodoro timer](public/pomondoro.png)
+
+![Pomodoro session running](public/pomondoro-started.png)
 
 ### Appearance & Personalization
 
@@ -79,8 +83,7 @@ Interactive 3D globe (amCharts) for picking countries/timezones, floating clock 
 - Magnetic navigation dock with per-mode shortcuts
 - Optional eye-tracking decorative widget
 
-<!-- TODO: replace with settings/themes screenshot -->
-![Settings placeholder](https://placehold.co/800x450/1C1C1A/F0EDE8?text=Themes+%26+Settings)
+![Settings panel](public/settings-panel.png)
 
 ### Data portability
 
@@ -198,7 +201,7 @@ notes_apps/
 │   └── ...
 ├── hooks/                  # React hooks (navigation, fonts, location)
 ├── lib/                    # Zustand stores, utilities, theme presets
-├── public/                 # Static assets (SVG icons)
+├── public/                 # Static assets (logo, screenshots)
 ├── THIRD_PARTY_LICENSES/   # Third-party license files (e.g. amCharts)
 ├── .env.example            # Required environment variable template
 ├── package.json
