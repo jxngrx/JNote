@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  transpilePackages: ['@amcharts/amcharts5', '@amcharts/amcharts5-geodata'],
 };
 
 export default nextConfig;

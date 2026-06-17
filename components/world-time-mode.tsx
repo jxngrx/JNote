@@ -1,104 +1,134 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
-
-function isLeap(y: number) {
-  return (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0;
-}
+import { useState } from 'react';
+import { AnimatePresence } from 'motion/react';
+import { Plus, Globe2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useWorldTimeStore, MAX_WORLD_CLOCKS } from '@/lib/world-time-store';
+import { useWorldTimeUiStore } from '@/lib/world-time-ui-store';
+import { ClockCard } from '@/components/world-time/clock-card';
+import { ClockFocusView } from '@/components/world-time/clock-focus-view';
+import { AddClockDialog } from '@/components/world-time/add-clock-dialog';
+import PomodoroMode from '@/components/pomodoro-mode';
 
 export default function WorldTimeMode() {
-  const [progressWidth, setProgressWidth] = useState('0%');
+  const view = useWorldTimeUiStore((s) => s.view);
+  const clocks = useWorldTimeStore((s) => s.clocks);
+  const addClock = useWorldTimeStore((s) => s.addClock);
+  const removeClock = useWorldTimeStore((s) => s.removeClock);
+  const togglePin = useWorldTimeStore((s) => s.togglePin);
+  const canAddMore = useWorldTimeStore((s) => s.canAddMore);
 
-  const data = useMemo(() => {
-    const now = new Date();
-    const year = now.getFullYear();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [focusClockId, setFocusClockId] = useState<string | null>(null);
 
-    const start = new Date(year, 0, 0);
-    const diff = now.getTime() - start.getTime();
-    const oneDay = 1000 * 60 * 60 * 24;
-    const currentDay = Math.floor(diff / oneDay);
+  const slotsRemaining = MAX_WORLD_CLOCKS - clocks.length;
 
-    const totalDays = isLeap(year) ? 366 : 365;
-    const remaining = totalDays - currentDay;
-    const percentNumber = Number(((currentDay / totalDays) * 100).toFixed(1));
-    const todayLabel = now.toLocaleDateString(undefined, {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-    });
+  const handleRemove = (id: string) => {
+    removeClock(id);
+    if (focusClockId === id) setFocusClockId(null);
+  };
 
-    return {
-      now,
-      year,
-      currentDay,
-      totalDays,
-      remaining,
-      percentNumber,
-      todayLabel,
-    };
-  }, []);
-
-  useEffect(() => {
-    const t = window.setTimeout(() => {
-      setProgressWidth(`${data.percentNumber}%`);
-    }, 500);
-    return () => window.clearTimeout(t);
-  }, [data.percentNumber]);
+  if (view === 'pomodoro') {
+    return <PomodoroMode />;
+  }
 
   return (
-    <div className="year-dots-body">
-      <div className="year-dots-wrapper">
-        <h1 className="year-dots-h1">{data.year}</h1>
-        <p className="year-dots-sub">Each circle is one day.</p>
+    <>
+      <div className={`wt-root${focusClockId ? ' is-focus-open' : ''}`}>
+        <div className="wt-shell">
+          <header className="wt-header app-readable-panel">
+            <div>
+              <p className="page-label">Noterx · World</p>
+              <h1 className="page-title">
+                <strong>World</strong> Clock
+              </h1>
+              <p className="page-subtitle">
+                Up to {MAX_WORLD_CLOCKS} zones — drag the globe to pick a country
+              </p>
+            </div>
+            <Button
+              variant="primary"
+              disabled={!canAddMore()}
+              onClick={() => setDialogOpen(true)}
+            >
+              <Plus size={16} strokeWidth={2} />
+              Add clock
+            </Button>
+          </header>
 
-        <div className="year-dots-stats">
-          <div className="year-dots-stat">
-            <h2 className="year-dots-stat-value">{data.currentDay}</h2>
-            <p className="year-dots-stat-label">Days Lived This Year</p>
-          </div>
-
-          <div className="year-dots-stat">
-            <h2 className="year-dots-stat-value">{data.remaining}</h2>
-            <p className="year-dots-stat-label">Days Remaining</p>
-          </div>
-
-          <div className="year-dots-stat">
-            <h2 className="year-dots-stat-value">{data.percentNumber}%</h2>
-            <p className="year-dots-stat-label">Year Complete</p>
-          </div>
+          {clocks.length === 0 ? (
+            <section className="wt-empty">
+              <div className="wt-empty-icon" aria-hidden>
+                <Globe2 size={28} strokeWidth={1.5} />
+              </div>
+              <h2 className="wt-empty-title">No clocks yet</h2>
+              <p className="wt-empty-desc">
+                Spin the 3D globe, tap a country, and pin its live time here.
+              </p>
+              <Button variant="ghost" size="lg" onClick={() => setDialogOpen(true)}>
+                <Plus size={16} strokeWidth={2} />
+                Add your first clock
+              </Button>
+            </section>
+          ) : (
+            <section
+              className="wt-clock-grid"
+              aria-label={`${clocks.length} world clocks`}
+            >
+              {clocks.map((clock, index) => (
+                <ClockCard
+                  key={clock.id}
+                  clock={clock}
+                  index={index}
+                  onRemove={handleRemove}
+                  onFocus={setFocusClockId}
+                  onTogglePin={togglePin}
+                />
+              ))}
+              {canAddMore() && (
+                <button
+                  type="button"
+                  className="wt-clock-add-slot"
+                  onClick={() => setDialogOpen(true)}
+                  aria-label="Add another clock"
+                >
+                  <Plus size={20} strokeWidth={1.75} />
+                  <span>Add clock</span>
+                  <span className="wt-clock-add-count">
+                    {slotsRemaining} remaining
+                  </span>
+                </button>
+              )}
+            </section>
+          )}
         </div>
-
-        <div
-          className="year-dots-grid"
-          style={
-            {
-              '--yd-total-days': data.totalDays,
-            } as React.CSSProperties
-          }
-        >
-          {Array.from({ length: data.totalDays }, (_, idx) => {
-            const day = idx + 1;
-            const filled = day <= data.currentDay;
-            return (
-              <div
-                key={day}
-                className={`year-dots-dot ${filled ? 'filled' : ''}`}
-                style={{ animationDelay: `${day * 6}ms` }}
-                title={`Day ${day}`}
-              />
-            );
-          })}
-        </div>
-
-        <div className="year-dots-progress-bar">
-          <div className="year-dots-progress" style={{ width: progressWidth }} />
-        </div>
-
-        <p className="year-dots-tooltip">
-          Today is <span className="year-dots-today">{data.todayLabel}</span>
-        </p>
       </div>
-    </div>
+
+      <AnimatePresence>
+        {focusClockId && clocks.length > 0 && (
+          <ClockFocusView
+            clocks={clocks}
+            activeClockId={focusClockId}
+            onActiveChange={setFocusClockId}
+            onClose={() => setFocusClockId(null)}
+          />
+        )}
+      </AnimatePresence>
+
+      <AddClockDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        onAdd={(payload) =>
+          addClock(payload.countryId, payload.countryName, payload.timezone)
+        }
+        existingClocks={clocks.map((c) => ({
+          countryId: c.countryId,
+          countryName: c.countryName,
+          timezone: c.timezone,
+        }))}
+        slotsRemaining={slotsRemaining}
+      />
+    </>
   );
 }
-

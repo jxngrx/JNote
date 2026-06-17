@@ -1,242 +1,250 @@
-# Sticky Notes Infinite Canvas
+<div align="center">
 
-A production-ready infinite canvas sticky notes application built with Next.js, React, TypeScript, and Tailwind CSS. Features drag-and-drop notes, infinite canvas with pan/zoom, color picker, autosave to localStorage, and import/export functionality.
+# Noterx
 
-## Features
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Build](https://img.shields.io/badge/Build-passing-brightgreen)](https://github.com/jxngrx/notes_apps)
+[![Last commit](https://img.shields.io/github/last-commit/jxngrx/notes_apps)](https://github.com/jxngrx/notes_apps/commits/main)
+[![Stars](https://img.shields.io/github/stars/jxngrx/notes_apps?style=social)](https://github.com/jxngrx/notes_apps/stargazers)
+[![Made with Next.js](https://img.shields.io/badge/Made%20with-Next.js%2016-black?logo=next.js)](https://nextjs.org/)
 
-- 🎨 **Infinite Canvas** - Pan and zoom across unlimited workspace
-- 📝 **Draggable & Resizable Notes** - Move and resize notes freely with smooth interactions
-- 🎭 **Custom Colors** - 8 pastel colors + custom hex input
-- 💾 **Auto-save** - All changes persist to localStorage automatically
-- 📤 **Export/Import** - Save and restore workspaces as JSON
-- ⌨️ **Keyboard Shortcuts** - Full keyboard navigation and shortcuts
-- ♿ **Accessible** - WCAG compliant with ARIA labels and keyboard support
-- 📱 **Responsive** - Touch-friendly on mobile devices
+[![Typing SVG](https://readme-typing-svg.herokuapp.com?font=DM+Sans&weight=500&size=22&duration=4000&pause=1200&color=1A1A1A&center=true&vCenter=true&width=520&lines=Capture+ideas.+Organize+work.+Stay+in+flow.)](https://github.com/jxngrx/notes_apps)
 
-## Tech Stack
+<!-- TODO: replace with actual demo GIF/screenshot -->
+![Noterx demo placeholder](https://placehold.co/1200x640/1C1C1A/F0EDE8?text=Noterx+Demo+Screenshot+Coming+Soon)
 
-- **Next.js 16** - React framework with App Router
-- **TypeScript** - Type-safe development
-- **Tailwind CSS v4** - Utility-first styling
-- **Zustand** - Lightweight state management
-- **Lucide Icons** - Beautiful icon library
-- **Jest & React Testing Library** - Comprehensive testing
+*A fast, local-first productivity workspace — sticky notes, rich pages, drawings, kanban todos, and world clocks in one app.*
 
-## Getting Started
-
-### Installation
-
-\`\`\`bash
-# Clone or download the repository
-cd sticky-notes-canvas
-
-# Install dependencies (Next.js auto-installs from imports)
-npm install
-
-# Run development server
-npm run dev
-\`\`\`
-
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-### Build & Deploy
-
-\`\`\`bash
-# Build for production
-npm run build
-
-# Start production server
-npm start
-
-# Deploy to Vercel
-npm install -g vercel
-vercel
-\`\`\`
-
-## Usage
-
-### Creating Notes
-- Click the **+** button in the toolbar or press **N**
-- Notes appear at the center of your viewport
-- Double-click a note to edit its content
-
-### Navigation
-- **Mouse wheel + Ctrl** - Zoom in/out
-- **Shift + Left click drag** - Pan the canvas
-- **Middle mouse drag** - Pan (alternative)
-
-### Editing Notes
-- Click inside a note to edit text
-- Drag from edges to resize
-- Drag the note header to move
-- Use the toolbar icons for actions
-
-### Keyboard Shortcuts
-
-| Shortcut | Action |
-|----------|--------|
-| N | Create new note |
-| Ctrl+S | Export notes as JSON |
-| Ctrl+I | Import notes from JSON |
-| Ctrl+D | Duplicate selected note |
-| Ctrl+P | Pin/unpin note |
-| Ctrl+Delete | Delete selected note |
-
-### Color Palette
-
-Click the 🎨 icon on any note to access the color picker with 8 preset colors:
-- Yellow, Green, Blue, Pink
-- Orange, Purple, Cyan, Lime
-
-Or enter a custom hex color (e.g., #FF5733).
-
-## Data Format
-
-Notes are stored as JSON with the following structure:
-
-\`\`\`json
-{
-  "notes": [
-    {
-      "id": "note_1681234567890",
-      "x": 240,
-      "y": 120,
-      "width": 320,
-      "height": 210,
-      "zIndex": 10,
-      "color": "#FFF59D",
-      "content": "Hello world\nThis is a note",
-      "createdAt": 1681234567890,
-      "updatedAt": 1681234568000,
-      "isPinned": false
-    }
-  ],
-  "viewport": {
-    "scale": 1,
-    "translateX": 0,
-    "translateY": 0
-  },
-  "meta": {
-    "lastId": "note_1681234567890",
-    "exportedAt": 1681234568000
-  }
-}
-\`\`\`
-
-## Testing
-
-\`\`\`bash
-# Run tests
-npm run test
-
-# Run tests in watch mode
-npm run test:watch
-
-# Generate coverage report
-npm run test:coverage
-\`\`\`
-
-## Accessibility
-
-The app includes comprehensive accessibility features:
-- Semantic HTML with proper ARIA labels
-- Keyboard navigation support (Tab, Enter, Delete)
-- Screen reader-friendly content
-- High contrast dark theme
-- Focus indicators on interactive elements
-- Accessible color picker with descriptions
-
-## Browser Support
-
-- Chrome/Edge 90+
-- Firefox 88+
-- Safari 14+
-- Mobile browsers (iOS Safari, Chrome Mobile)
-
-## Performance
-
-- Virtual canvas (20,000 × 20,000 px) handles unlimited workspace
-- Optimized re-renders with Zustand store
-- CSS transforms for smooth animations
-- localStorage for instant persistence
-- Debounced autosave (200ms)
-
-## Project Structure
-
-\`\`\`
-├── app/
-│   ├── page.tsx              # Main page
-│   ├── layout.tsx            # Root layout
-│   └── globals.css           # Global styles & theme
-├── components/
-│   ├── canvas.tsx            # Infinite canvas
-│   ├── sticky-note.tsx       # Note component
-│   └── toolbar.tsx           # Top toolbar
-├── lib/
-│   ├── store.ts              # Zustand store
-│   ├── types.ts              # TypeScript types
-│   └── constants.ts          # App constants
-├── __tests__/
-│   └── store.test.ts         # Unit tests
-├── jest.config.json          # Jest configuration
-└── jest.setup.js             # Jest setup file
-\`\`\`
-
-## Keyboard Navigation
-
-### Canvas Navigation
-- **Arrow Keys** - Pan viewport (when no note is focused)
-- **Ctrl + Scroll** - Zoom in/out
-- **Shift + Arrow** - Pan faster
-
-### Note Editing
-- **Tab** - Move to next note
-- **Shift + Tab** - Move to previous note
-- **Enter** - New line in note
-- **Ctrl+D** - Duplicate note
-- **Ctrl+P** - Pin/unpin
-- **Ctrl+Delete** - Delete note
-
-## Environment Variables
-
-No environment variables required for basic functionality. The app uses localStorage for persistence.
-
-## Troubleshooting
-
-### Notes not saving?
-- Check browser localStorage is enabled
-- Open DevTools → Application → Local Storage
-
-### Import not working?
-- Ensure the JSON file is valid (exported from this app or valid structure)
-- Check browser console for error messages
-
-### Performance issues with many notes?
-- The app supports 200+ notes efficiently
-- For 1000+ notes, consider browser virtualization
-
-## Future Enhancements
-
-- [ ] Cloud sync with authentication
-- [ ] Real-time collaboration
-- [ ] Drawing/sketching in notes
-- [ ] Image embedding
-- [ ] Rich text formatting
-- [ ] Tags and search
-- [ ] Dark mode theme
-
-## Contributing
-
-This is a demo project. Feel free to fork and customize for your needs!
-
-## License
-
-MIT - Use freely for personal or commercial projects.
-
-## Support
-
-For issues or feature requests, please check the GitHub issues page or create a new one.
+</div>
 
 ---
 
-**Built with ❤️ using Next.js, React, and TypeScript**
+## Table of Contents
+
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+- [Project Structure](#project-structure)
+- [Environment Variables](#environment-variables)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## Features
+
+Noterx is a multi-mode productivity app. All workspace data stays in your browser (`localStorage` / IndexedDB) unless you export it.
+
+### Sticky Notes
+
+Infinite canvas with pan/zoom, draggable resizable notes, pastel color picker, pinning, and JSON export/import.
+
+<!-- TODO: replace with sticky notes screenshot -->
+![Sticky notes placeholder](https://placehold.co/800x450/F5F4F0/1A1A1A?text=Sticky+Notes+Mode)
+
+### Pages
+
+TipTap-powered rich text editor with slash commands, callouts, code blocks, tables, task lists, link previews, notebook view, per-page fonts/icons, and auto-titled pages.
+
+<!-- TODO: replace with pages editor screenshot -->
+![Pages editor placeholder](https://placehold.co/800x450/FFFFFF/1A1A1A?text=Pages+Editor)
+
+### Area (Drawings)
+
+Excalidraw-based whiteboard mode with multiple scenes, autosave, and JSON export/import.
+
+<!-- TODO: replace with area mode screenshot -->
+![Area mode placeholder](https://placehold.co/800x450/111110/F0EDE8?text=Area+%2F+Excalidraw)
+
+### Todo (Kanban)
+
+Drag-and-drop kanban board with customizable columns, recycle bin, list management, celebration effects, and optional custom completion/move sounds (IndexedDB).
+
+<!-- TODO: replace with todo kanban screenshot -->
+![Todo kanban placeholder](https://placehold.co/800x450/EDECEA/1A1A1A?text=Todo+Kanban)
+
+### World Time & Pomodoro
+
+Interactive 3D globe (amCharts) for picking countries/timezones, floating clock widgets, focus view, and a built-in Pomodoro timer with customizable durations.
+
+<!-- TODO: replace with world time screenshot -->
+![World time placeholder](https://placehold.co/800x450/242422/F0EDE8?text=World+Time+%2B+Pomodoro)
+
+### Appearance & Personalization
+
+- Light/dark theme presets (Noterx, Monkeytype-inspired palettes, and more)
+- Custom typography (primary + mono secondary fonts)
+- Photo, gradient, and custom wallpaper backgrounds with contrast-aware UI tokens
+- Magnetic navigation dock with per-mode shortcuts
+- Optional eye-tracking decorative widget
+
+<!-- TODO: replace with settings/themes screenshot -->
+![Settings placeholder](https://placehold.co/800x450/1C1C1A/F0EDE8?text=Themes+%26+Settings)
+
+### Data portability
+
+Per-mode JSON export/import from **Settings → Data** (sticky notes, pages, area scenes, todos).
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| Framework | [Next.js 16](https://nextjs.org/) (App Router, Turbopack) |
+| Language | [TypeScript](https://www.typescriptlang.org/) |
+| UI | [React 19](https://react.dev/) |
+| Styling | [Tailwind CSS v4](https://tailwindcss.com/) |
+| State | [Zustand](https://zustand.docs.pmnd.rs/) |
+| Rich text | [TipTap](https://tiptap.dev/) |
+| Drawings | [Excalidraw](https://excalidraw.com/) |
+| Globe / maps | [amCharts 5](https://www.amcharts.com/) |
+| Drag & drop | [@dnd-kit](https://dndkit.com/) |
+| Animation | [Motion](https://motion.dev/) |
+| Icons | [Lucide](https://lucide.dev/) |
+| Analytics | [@vercel/analytics](https://vercel.com/docs/analytics) (on Vercel deploys) |
+| Linting | ESLint + `eslint-config-next` |
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- **Node.js** 20+ (LTS recommended)
+- **Yarn** 1.x (project uses `yarn.lock`)
+
+### 1. Clone
+
+```bash
+git clone https://github.com/jxngrx/notes_apps.git
+cd notes_apps
+```
+
+### 2. Install dependencies
+
+```bash
+yarn install
+```
+
+### 3. Configure environment
+
+```bash
+cp .env.example .env.local
+```
+
+Edit `.env.local` and set your public site URL (required for metadata and Open Graph):
+
+```bash
+NEXT_PUBLIC_SITE_URL=https://your-domain.example.com/
+```
+
+> Include the scheme (`https://`) and a trailing slash.
+
+### 4. Run the dev server
+
+```bash
+yarn dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+### 5. Production build
+
+```bash
+yarn build
+yarn start
+```
+
+<details>
+<summary><strong>Troubleshooting</strong></summary>
+
+**Build fails: `NEXT_PUBLIC_SITE_URL is required`**
+
+Copy `.env.example` → `.env.local` and set the variable before running `yarn build`.
+
+**Notes not persisting**
+
+Ensure browser `localStorage` is enabled (DevTools → Application → Local Storage).
+
+**Import fails**
+
+Exports must be valid JSON from Noterx's export action for that mode.
+
+</details>
+
+---
+
+## Project Structure
+
+```
+notes_apps/
+├── app/                    # Next.js App Router (layout, page, API routes)
+│   ├── api/
+│   │   ├── link-preview/   # Server-side OG metadata fetch (SSRF-protected)
+│   │   └── location/       # IP-based timezone lookup for world clocks
+│   ├── layout.tsx          # Root layout, fonts, metadata
+│   ├── page.tsx            # Main shell — mode switching
+│   └── globals.css         # Global styles + mode-specific CSS
+├── components/
+│   ├── pages/              # TipTap editor, slash menu, notebook view
+│   ├── pomodoro/           # Pomodoro timer UI
+│   ├── settings/           # Settings modal panels
+│   ├── world-time/         # Globe picker, clock cards, focus view
+│   ├── ui/                 # Shared UI (dock, scroll area, eye widget)
+│   ├── canvas.tsx          # Sticky notes infinite canvas
+│   ├── todo-kanban-board.tsx
+│   └── ...
+├── hooks/                  # React hooks (navigation, fonts, location)
+├── lib/                    # Zustand stores, utilities, theme presets
+├── public/                 # Static assets (SVG icons)
+├── THIRD_PARTY_LICENSES/   # Third-party license files (e.g. amCharts)
+├── .env.example            # Required environment variable template
+├── package.json
+├── README.md
+└── CONTRIBUTING.md
+```
+
+---
+
+## Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `NEXT_PUBLIC_SITE_URL` | **Yes** | Public canonical URL for metadata, Open Graph, and `metadataBase`. Example: `https://noterx.example.com/` |
+
+No other environment variables are used in the current codebase.
+
+---
+
+## Roadmap
+
+- [x] Multi-mode workspace (sticky notes, pages, area, todo, world time)
+- [x] Local-first persistence (`localStorage` + IndexedDB)
+- [x] Per-mode JSON export/import
+- [x] Custom themes, typography, and wallpapers
+- [x] Link preview cards in Pages editor
+- [x] Kanban todo with column management
+- [x] SSRF protection on link-preview API
+- [ ] Full-text search across notes and pages
+- [ ] Keyboard shortcut reference in-app (expanded)
+- [ ] Mobile layout polish
+- [ ] CI pipeline (lint + build on PRs)
+- [ ] Privacy policy page (analytics + IP geolocation disclosure)
+- [ ] Cloud sync with authentication *(speculative)*
+- [ ] Real-time collaboration *(speculative)*
+
+---
+
+## Contributing
+
+Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, branch naming, commit style, and PR guidelines.
+
+---
+
+## License
+
+[MIT](LICENSE) — see [LICENSE](LICENSE) for details.
+
+Third-party licenses (including [amCharts 5 linkware terms](THIRD_PARTY_LICENSES/amcharts5-LICENSE.txt)) are in `THIRD_PARTY_LICENSES/`.

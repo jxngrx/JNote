@@ -3,6 +3,7 @@
 import { StickyNote as StickyNoteType } from '@/lib/types';
 import { useCanvasStore } from '@/lib/store';
 import { useRef, useState, useEffect, useMemo, useCallback, memo } from 'react';
+import { NATIVE_SCROLL_CLASS } from '@/components/ui/scroll-area';
 
 interface StickyNoteProps {
   note: StickyNoteType;
@@ -248,7 +249,7 @@ function StickyNoteComponent({ note }: StickyNoteProps) {
       <div className="sticky-note-content">
         <div
           ref={contentRef}
-          className="sticky-note-editor"
+          className={`sticky-note-editor ${NATIVE_SCROLL_CLASS}`}
           contentEditable
           suppressContentEditableWarning
           onInput={handleContentChange}

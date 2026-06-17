@@ -1,37 +1,31 @@
 'use client';
 
 import { create } from 'zustand';
-import { PagesStore, Page } from './types';
+import { PagesStore, Page, PageContentJson } from './types';
+import { extractPlainTextFromJson } from './pages-migrate';
 
 const STORAGE_KEY = 'sticky-pages-v1';
+
+const EMPTY_DOC: PageContentJson = {
+  type: 'doc',
+  content: [{ type: 'paragraph' }],
+};
 
 const generatePageId = () => `page_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
 let saveDebounceTimer: NodeJS.Timeout | null = null;
 
-function computeAutoTitle(html: string, maxLetters = 10) {
-  const raw = html || '';
-  // Preserve visual "line" boundaries before stripping tags so the title
-  // only comes from the first line the user typed.
-  const withLineBreaks = raw
-    .replace(/<br\s*\/?>/gi, '\n')
-    .replace(/<\/(p|div|h[1-6]|li|tr|blockquote|pre)\s*>/gi, '\n');
-
-  const text = withLineBreaks.replace(/<[^>]*>/g, '');
+function computeAutoTitle(text: string, maxLetters = 10) {
   const firstLineRaw =
     text
-      .replace(/&nbsp;/gi, ' ')
       .replace(/\u00a0/g, ' ')
       .split(/\r?\n/)
       .map((l) => l.replace(/\s+/g, ' ').trim())
       .find((l) => l.length > 0) ?? '';
 
-  const normalized = firstLineRaw;
-
-  // Keep spaces between words, but limit by letter count (A-Z).
   let letterCount = 0;
   let out = '';
-  for (const ch of normalized) {
+  for (const ch of firstLineRaw) {
     const isLetter = /[A-Za-z]/.test(ch);
     if (isLetter) {
       if (letterCount >= maxLetters) break;
@@ -39,7 +33,6 @@ function computeAutoTitle(html: string, maxLetters = 10) {
       out += ch;
       continue;
     }
-    // Preserve single spaces only if we've started and still building the title.
     if (ch === ' ' && out && !out.endsWith(' ') && letterCount < maxLetters) {
       out += ' ';
     }
@@ -47,6 +40,16 @@ function computeAutoTitle(html: string, maxLetters = 10) {
 
   const title = out.trim();
   return title || 'Untitled';
+}
+
+function normalizePageMeta(page: Page): Page {
+  return {
+    ...page,
+    titleMode: page.titleMode ?? 'auto',
+    width: page.width ?? 'narrow',
+    fontFamily: page.fontFamily ?? 'default',
+    icon: page.icon ?? null,
+  };
 }
 
 export const usePagesStore = create<PagesStore>((set, get) => ({
@@ -60,6 +63,10 @@ export const usePagesStore = create<PagesStore>((set, get) => ({
       title: 'Untitled',
       titleMode: 'auto',
       content: '',
+      contentJson: EMPTY_DOC,
+      width: 'narrow',
+      fontFamily: 'default',
+      icon: null,
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
@@ -75,37 +82,38 @@ export const usePagesStore = create<PagesStore>((set, get) => ({
 
   updatePage: (id: string, updates: Partial<Page>) => {
     set((state) => ({
-      pages: state.pages.map((page) =>
-        page.id === id
-          ? {
-              ...page,
-              ...updates,
-              titleMode:
-                updates.title !== undefined
-                  ? (updates.title || '').trim()
-                    ? 'custom'
-                    : 'auto'
-                  : page.titleMode ?? 'auto',
-              updatedAt: Date.now(),
-            }
-          : page
-      ),
+      pages: state.pages.map((page) => {
+        if (page.id !== id) return page;
+
+        const next: Page = {
+          ...page,
+          ...updates,
+          updatedAt: Date.now(),
+        };
+
+        if (updates.title !== undefined) {
+          next.titleMode = (updates.title || '').trim() ? 'custom' : 'auto';
+        }
+
+        if (updates.contentJson !== undefined && updates.contentJson) {
+          next.contentJson = updates.contentJson;
+        }
+
+        return next;
+      }),
     }));
 
-    // Auto-update title from content only if user didn't set a custom title
-    if (updates.content !== undefined) {
+    if (updates.contentJson !== undefined) {
       const page = get().pages.find((p) => p.id === id);
-      if (page) {
-        const titleMode = page.titleMode ?? 'auto';
-        if (titleMode !== 'custom') {
-          const newTitle = computeAutoTitle(updates.content, 10);
-          if (newTitle !== page.title) {
-            set((state) => ({
-              pages: state.pages.map((p) =>
-                p.id === id ? { ...p, title: newTitle, titleMode: 'auto' } : p
-              ),
-            }));
-          }
+      if (page && (page.titleMode ?? 'auto') !== 'custom') {
+        const plain = extractPlainTextFromJson(updates.contentJson ?? page.contentJson);
+        const newTitle = computeAutoTitle(plain, 10);
+        if (newTitle !== page.title) {
+          set((state) => ({
+            pages: state.pages.map((p) =>
+              p.id === id ? { ...p, title: newTitle, titleMode: 'auto' } : p
+            ),
+          }));
         }
       }
     }
@@ -121,11 +129,12 @@ export const usePagesStore = create<PagesStore>((set, get) => ({
       const newPages = state.pages.filter((page) => page.id !== id);
       return {
         pages: newPages,
-        activePageId: state.activePageId === id
-          ? newPages.length > 0
-            ? newPages[0].id
-            : null
-          : state.activePageId,
+        activePageId:
+          state.activePageId === id
+            ? newPages.length > 0
+              ? newPages[0].id
+              : null
+            : state.activePageId,
       };
     });
 
@@ -144,16 +153,21 @@ export const usePagesStore = create<PagesStore>((set, get) => ({
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         const data = JSON.parse(stored);
+        const pages = (data.pages || []).map((p: Page) => normalizePageMeta(p));
         set({
-          pages: (data.pages || []).map((p: Page) => ({
-            ...p,
-            titleMode: p.titleMode ?? 'auto',
-          })),
-          activePageId: data.activePageId || null,
+          pages,
+          activePageId: data.activePageId || pages[0]?.id || null,
         });
+      }
+
+      if (get().pages.length === 0) {
+        get().createPage();
       }
     } catch (error) {
       console.error('Failed to load pages from storage:', error);
+      if (get().pages.length === 0) {
+        get().createPage();
+      }
     }
   },
 

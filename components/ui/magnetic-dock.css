@@ -1,0 +1,321 @@
+.mag-dock-wrap {
+  position: fixed;
+  left: 50%;
+  right: auto;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  z-index: var(--z-sticky);
+  display: flex;
+  justify-content: center;
+  width: max-content;
+  max-width: calc(100vw - 1.25rem);
+  padding: 0;
+  pointer-events: none;
+  overflow: visible;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.mag-dock-shell {
+  pointer-events: auto;
+  display: inline-flex;
+  justify-content: center;
+  width: fit-content;
+  max-width: calc(100vw - 1rem);
+  overflow: visible;
+  border-radius: var(--radius-lg, 22px);
+  border: 1px solid var(--border-strong);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: var(--shadow-lg);
+}
+
+.mag-dock {
+  display: inline-flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: var(--mag-dock-gap, 6px);
+  width: max-content;
+  max-width: 100%;
+  padding: var(--mag-dock-pad-y, 8px) var(--mag-dock-pad-x, 10px);
+  border-radius: inherit;
+  border: none;
+  background: transparent;
+  backdrop-filter: none;
+  box-shadow: none;
+  overflow-x: auto;
+  overflow-y: visible;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  transition: padding 0.45s cubic-bezier(0.33, 1, 0.68, 1),
+    gap 0.45s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.mag-dock.is-hovered {
+  padding-top: calc(
+    var(--mag-dock-lift, 10px) + var(--mag-dock-pad-y-hover, 14px)
+  );
+  padding-bottom: var(--mag-dock-pad-y-hover, 14px);
+  padding-inline: calc(
+    var(--mag-dock-pad-x-hover, 16px) + var(--mag-dock-edge, 8px)
+  );
+  gap: var(--mag-dock-gap-hover, 16px);
+}
+
+.mag-dock.is-reordering {
+  transition: none;
+}
+
+.mag-dock.is-reordering.is-hovered {
+  gap: var(--mag-dock-gap, 6px);
+  padding-top: var(--mag-dock-pad-y, 8px);
+  padding-bottom: var(--mag-dock-pad-y, 8px);
+  padding-inline: var(--mag-dock-pad-x, 10px);
+}
+
+.mag-dock-slot.is-reorder-shifting {
+  transition: transform 0.18s cubic-bezier(0.33, 1, 0.68, 1);
+  will-change: transform;
+}
+
+.mag-dock::-webkit-scrollbar {
+  display: none;
+}
+
+.mag-dock-slot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+button.mag-dock-item {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+button.mag-dock-item:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 3px;
+  border-radius: 14px;
+}
+
+.mag-dock-item-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm, 10px);
+  overflow: hidden;
+  border: 1px solid var(--border-strong);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--surface-2) 90%, white 10%) 0%,
+    var(--bg) 100%
+  );
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.35s cubic-bezier(0.33, 1, 0.68, 1),
+    border-color 0.35s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+button.mag-dock-item.is-active .mag-dock-item-inner {
+  border-color: color-mix(in srgb, var(--orange) 50%, var(--border));
+  background: color-mix(in srgb, var(--bg) 65%, var(--orange-muted));
+}
+
+button.mag-dock-item.is-hot .mag-dock-item-inner {
+  border-color: color-mix(in srgb, var(--orange) 40%, var(--border));
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--orange) 18%, transparent);
+}
+
+button.mag-dock-item.is-sub .mag-dock-item-inner {
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface) 75%, transparent);
+}
+
+button.mag-dock-item.is-sub .mag-dock-item-icon {
+  opacity: 0.9;
+}
+
+.mag-dock-item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58%;
+  height: 58%;
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+
+.mag-dock-item-initials {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  font-family: var(--font);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1;
+  color: inherit;
+  user-select: none;
+}
+
+button.mag-dock-item.is-sub .mag-dock-item-initials {
+  font-size: 0.74rem;
+}
+
+.mag-dock--todo .mag-dock-item-initials {
+  font-size: 0.84rem;
+}
+
+.mag-dock--todo button.mag-dock-item.is-sub .mag-dock-item-initials {
+  font-size: 0.8rem;
+}
+
+button.mag-dock-item.is-reorder-dragging {
+  z-index: 4;
+  cursor: grabbing;
+  transition: none;
+}
+
+button.mag-dock-item.is-reorder-dragging .mag-dock-item-inner {
+  box-shadow: var(--shadow-lg);
+  border-color: color-mix(in srgb, var(--orange) 35%, var(--border-strong));
+}
+
+button.mag-dock-item.is-active .mag-dock-item-icon,
+button.mag-dock-item.is-hot .mag-dock-item-icon {
+  color: var(--orange);
+}
+
+.mag-dock-item-shine {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, white 22%, transparent) 0%,
+    transparent 52%,
+    transparent 100%
+  );
+  opacity: 0.45;
+  transition: opacity 0.35s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+button.mag-dock-item.is-hot .mag-dock-item-shine {
+  opacity: 0.75;
+}
+
+.mag-dock-item-dot {
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--orange);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.mag-dock-item-badge {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: var(--radius-pill);
+  background: var(--red);
+  color: #fff;
+  font-family: var(--font);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 18px;
+  text-align: center;
+  border: 2px solid var(--bg);
+  pointer-events: none;
+}
+
+.mag-dock-separator {
+  width: 1px;
+  align-self: center;
+  flex-shrink: 0;
+  height: calc(var(--mag-icon-size, 44px) - 12px);
+  margin: 0 2px;
+  background: var(--border-strong);
+}
+
+.mag-dock-tooltip {
+  position: fixed;
+  z-index: calc(var(--z-toast) + 2);
+  padding: 0.3rem 0.65rem;
+  border-radius: 9px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text-primary);
+  font-family: var(--font);
+  font-size: 0.72rem;
+  font-weight: 500;
+  white-space: nowrap;
+  max-width: min(180px, calc(100vw - 2rem));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+  box-shadow: var(--shadow-md);
+  transform: translate(-50%, -100%);
+}
+
+/* Todo tab — shrink-wrap shell, scroll when needed */
+.mag-dock-wrap--todo {
+  justify-content: center;
+}
+
+.mag-dock-wrap--todo .mag-dock-shell {
+  width: auto;
+  max-width: calc(100vw - 1rem);
+}
+
+.mag-dock-wrap--todo .mag-dock.mag-dock--todo,
+.mag-dock-wrap--todo .mag-dock {
+  width: max-content;
+  max-width: calc(100vw - 1rem);
+  justify-content: flex-start;
+  gap: var(--mag-dock-gap, 5px);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.mag-dock-wrap--todo .mag-dock.is-hovered {
+  gap: var(--mag-dock-gap-hover, 10px);
+}
+
+.mag-dock-wrap--todo button.mag-dock-item.is-sub .mag-dock-item-inner {
+  border-color: rgba(255, 255, 255, 0.04);
+}
+
+@media (max-width: 640px) {
+  .mag-dock-shell {
+    max-width: calc(100vw - 0.75rem);
+  }
+
+  .mag-dock {
+    justify-content: flex-start;
+  }
+}

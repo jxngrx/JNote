@@ -1,0 +1,120 @@
+.app-background {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.app-background-base {
+  position: absolute;
+  inset: -8%;
+  background-image: var(--app-bg-image);
+  background-size: cover;
+  background-position: center;
+  filter: blur(var(--app-bg-blur, 28px));
+  transform: scale(1.08);
+  will-change: transform, filter;
+}
+
+.app-background--gradient .app-background-mosaic {
+  display: none;
+}
+
+.app-background--gradient .app-background-base {
+  inset: 0;
+  transform: none;
+  background-image: none;
+  background: var(--app-bg-gradient);
+  filter: none;
+}
+
+.app-background-mosaic {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 0;
+  mix-blend-mode: overlay;
+  opacity: calc(var(--app-bg-mosaic, 0.45) * 0.65);
+  filter: blur(0.75px);
+}
+
+.app-background-tile {
+  background: color-mix(in srgb, var(--surface) 12%, transparent);
+  backdrop-filter: blur(calc(var(--app-bg-blur, 28px) * 0.35));
+  border: 1px solid color-mix(in srgb, var(--border) 40%, transparent);
+}
+
+.app-background-overlay {
+  position: absolute;
+  inset: 0;
+  background: color-mix(
+    in srgb,
+    var(--bg) calc(var(--app-bg-overlay, 0.52) * 100%),
+    transparent
+  );
+}
+
+/* Content readability veil — sits above wallpaper, below UI */
+.app-background-content-veil {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse 130% 95% at 50% 38%,
+      color-mix(in srgb, var(--bg) 10%, transparent) 0%,
+      color-mix(in srgb, var(--bg) 18%, transparent) 100%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--bg) 14%, transparent) 0%,
+      color-mix(in srgb, var(--bg) 16%, transparent) 48%,
+      color-mix(in srgb, var(--bg) 20%, transparent) 100%
+    );
+  pointer-events: none;
+}
+
+.app-background-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 80% 70% at 50% 45%,
+    transparent 0%,
+    color-mix(in srgb, var(--bg) 55%, transparent) 100%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-background-base {
+    transform: none;
+  }
+}
+
+/* Let global background show through content shells */
+.app-container:has(.app-background[data-active='true']) {
+  background: transparent;
+}
+
+.app-container:has(.app-background[data-active='true']) .content-area {
+  background: transparent;
+}
+
+.app-container:has(.app-background[data-active='true']) .content-area.pages-mode,
+.app-container:has(.app-background[data-active='true']) .content-area.area-mode {
+  background: transparent;
+}
+
+.app-container:has(.app-background[data-active='true']) .wt-shell {
+  background: transparent;
+}
+
+.app-container:has(.app-background[data-active='true']) .pomodoro-root {
+  background: transparent;
+}
+
+.app-container > :not(.app-background):not(.app-settings-overlay):not(.floating-clocks-layer):not(.mag-dock-wrap) {
+  position: relative;
+  z-index: 1;
+}

@@ -1,0 +1,1033 @@
+/* Kanban board layout */
+.todo-kanban-scroll {
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--text-tertiary) 55%, transparent) transparent;
+}
+
+.todo-kanban-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.todo-kanban-scroll::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text-tertiary) 55%, transparent);
+}
+
+.todo-kanban-board {
+  --todo-column-min: 160px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: 0.65rem;
+  height: 100%;
+  min-height: 0;
+  padding: 0.15rem 0 0.35rem;
+  width: max-content;
+  min-width: 100%;
+}
+
+.todo-kanban-column-shell {
+  flex: 0 0 var(--todo-column-basis, var(--todo-column-width, 272px));
+  width: var(--todo-column-basis, var(--todo-column-width, 272px));
+  min-width: 0;
+  max-width: var(--todo-column-width, 272px);
+  height: 100%;
+  min-height: 0;
+  display: flex;
+}
+
+.todo-kanban-column {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  box-shadow: none;
+  overflow: hidden;
+  transition:
+    border-color 0.25s cubic-bezier(0.33, 1, 0.68, 1),
+    background 0.25s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.todo-kanban-column.is-drop-target {
+  border-color: color-mix(in srgb, var(--orange) 22%, rgba(255, 255, 255, 0.04));
+  background: color-mix(in srgb, var(--orange) 4%, var(--surface));
+}
+
+.todo-kanban-column.is-done-column .todo-kanban-column-header {
+  border-bottom-color: rgba(255, 255, 255, 0.04);
+}
+
+.todo-kanban-column-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  padding: 0.75rem 0.85rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--surface-2) 80%, transparent);
+}
+
+.todo-kanban-column-title {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  cursor: default;
+  padding: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font);
+}
+
+.todo-kanban-column-title-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.25rem 0.4rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text-primary);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: var(--font);
+}
+
+.todo-kanban-column-badges {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-shrink: 0;
+}
+
+.todo-kanban-column-role {
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.12rem 0.38rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.todo-kanban-column-role.is-start {
+  color: #86efac;
+  background: rgba(74, 222, 128, 0.1);
+  border-color: rgba(74, 222, 128, 0.2);
+}
+
+.todo-kanban-column-role.is-done {
+  color: var(--orange);
+  background: color-mix(in srgb, var(--orange) 12%, transparent);
+  border-color: color-mix(in srgb, var(--orange) 24%, transparent);
+}
+
+.todo-kanban-column-percent {
+  font-size: 0.625rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+.todo-kanban-column-count {
+  font-size: 0.625rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  font-variant-numeric: tabular-nums;
+}
+
+.todo-kanban-column-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--text-tertiary) 45%, transparent) transparent;
+  cursor: text;
+  outline: none;
+}
+
+.todo-kanban-column-body::-webkit-scrollbar {
+  width: 5px;
+}
+
+.todo-kanban-column-body::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text-tertiary) 45%, transparent);
+}
+
+.todo-kanban-column-body:focus-visible {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--orange) 20%, transparent);
+}
+
+.todo-kanban-column-cards {
+  flex: 0 0 auto;
+  padding: 0.55rem 0.55rem 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.todo-kanban-column-spacer {
+  flex: 1 1 auto;
+  min-height: 3rem;
+}
+
+.todo-kanban-card-wrap {
+  touch-action: none;
+  flex-shrink: 0;
+}
+
+.todo-kanban-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  align-items: start;
+  gap: 0.45rem;
+  padding: 0.65rem 0.55rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: color-mix(in srgb, var(--surface-2) 50%, var(--surface));
+  box-shadow: none;
+  cursor: default;
+  will-change: transform;
+}
+
+.todo-kanban-card.is-editing {
+  border-color: color-mix(in srgb, var(--orange) 28%, rgba(255, 255, 255, 0.05));
+  background: var(--surface);
+}
+
+.todo-kanban-card.is-overlay {
+  box-shadow: var(--shadow-md);
+  border-color: color-mix(in srgb, var(--orange) 30%, rgba(255, 255, 255, 0.05));
+  rotate: 1deg;
+  background: var(--surface);
+}
+
+.todo-kanban-card.is-done {
+  opacity: 0.82;
+}
+
+.todo-kanban-card-grip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.125rem;
+  height: 1.125rem;
+  margin-top: 0.1rem;
+  border: none;
+  background: transparent;
+  color: var(--text-tertiary);
+  cursor: grab;
+  border-radius: 4px;
+  transition: color 0.2s, background 0.2s;
+}
+
+.todo-kanban-card-grip:hover {
+  color: var(--text-secondary);
+  background: color-mix(in srgb, var(--surface-2) 80%, black);
+}
+
+.todo-kanban-card-grip:active {
+  cursor: grabbing;
+}
+
+.todo-kanban-checkbox {
+  margin-top: 0.05rem;
+}
+
+.todo-kanban-card-body {
+  min-width: 0;
+}
+
+.todo-kanban-card-title {
+  margin: 0;
+  color: var(--text-primary);
+  font-weight: 500;
+  line-height: 1.4;
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+}
+
+.todo-kanban-card-placeholder {
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.todo-kanban-card-edit {
+  width: 100%;
+  padding: 0.2rem 0.35rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--surface);
+  color: var(--text-primary);
+  font-size: inherit;
+  font-family: var(--font);
+  font-weight: 500;
+  line-height: 1.4;
+  outline: none;
+}
+
+.todo-kanban-card-edit:focus {
+  border-color: color-mix(in srgb, var(--orange) 35%, rgba(255, 255, 255, 0.06));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--orange) 12%, transparent);
+}
+
+.todo-kanban-card.is-done .todo-kanban-card-title {
+  text-decoration: line-through;
+  color: var(--text-tertiary);
+}
+
+.todo-kanban-card-meta {
+  display: inline-block;
+  margin-top: 0.25rem;
+  font-size: var(--todo-font-size-meta, 10px);
+  font-family: var(--font-mono);
+  color: var(--text-tertiary);
+}
+
+.todo-kanban-card-delete {
+  width: 1.375rem;
+  height: 1.375rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-tertiary);
+  opacity: 0;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.todo-kanban-card:hover .todo-kanban-card-delete {
+  opacity: 1;
+}
+
+.todo-kanban-card-delete:hover {
+  background: color-mix(in srgb, var(--red) 12%, transparent);
+  color: var(--red);
+}
+
+/* Todo modals — column manager + customize */
+.todo-app-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
+  backdrop-filter: blur(8px);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.todo-app-modal {
+  width: min(28rem, calc(100vw - 2rem));
+  max-height: min(80vh, 540px);
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+  animation: slideUp 0.3s ease-out;
+  font-family: var(--font);
+}
+
+.todo-app-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.todo-app-modal-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.todo-app-modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.todo-app-modal-close:hover {
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+
+.todo-column-manager--wide {
+  display: flex;
+  flex-direction: column;
+  width: min(52rem, calc(100vw - 1.5rem));
+  max-width: min(52rem, calc(100vw - 1.5rem));
+  min-height: min(28rem, 72vh);
+  padding: 1.35rem 1.5rem 1.25rem;
+}
+
+.todo-column-manager-content--embedded .todo-column-manager-subtitle {
+  margin: 0 0 0.75rem;
+}
+
+.todo-column-manager-content--embedded .todo-column-manager-list {
+  max-height: min(36vh, 320px);
+  margin-bottom: 0.85rem;
+}
+
+.todo-column-manager-content--embedded .todo-column-manager-footer {
+  padding-top: 0;
+  border-top: none;
+}
+
+.todo-column-manager-subtitle {
+  margin: 0.2rem 0 0;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.todo-column-manager-row.is-locked {
+  opacity: 0.92;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+}
+
+.todo-column-manager-lock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+}
+
+.todo-column-manager-locked-label {
+  justify-self: end;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  padding: 0.2rem 0.45rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.todo-column-manager-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  min-height: 0;
+  max-height: min(46vh, 380px);
+  margin-bottom: 1rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.todo-column-manager-row {
+  display: grid;
+  grid-template-columns: 1.5rem 1fr 2rem;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.45rem 0.35rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: color-mix(in srgb, var(--surface-2) 92%, transparent);
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.todo-column-manager-row.is-locked {
+  grid-template-columns: 1.5rem 1fr auto;
+}
+
+.todo-column-manager-row.is-dragging {
+  opacity: 0.55;
+  border-color: color-mix(in srgb, var(--orange) 35%, rgba(255, 255, 255, 0.05));
+}
+
+.todo-column-manager-grip {
+  display: flex;
+  color: var(--text-tertiary);
+  cursor: grab;
+}
+
+.todo-column-manager-percent {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  justify-self: start;
+}
+
+.todo-column-manager-percent-input {
+  width: 3.1rem;
+  padding: 0.4rem 0.45rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-primary);
+  font-size: 0.8125rem;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.todo-column-manager-percent-input:focus {
+  outline: none;
+  border-color: var(--border-strong);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--orange) 10%, transparent);
+}
+
+.todo-column-manager-percent-suffix {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}
+
+.todo-column-manager-role {
+  justify-self: stretch;
+  padding: 0.38rem 0.45rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text-tertiary);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font);
+}
+
+.todo-column-manager-role:hover {
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+
+.todo-column-manager-role.is-active.is-start {
+  color: #86efac;
+  background: rgba(74, 222, 128, 0.12);
+  border-color: rgba(74, 222, 128, 0.28);
+}
+
+.todo-column-manager-role.is-active.is-done {
+  color: var(--orange);
+  background: color-mix(in srgb, var(--orange) 14%, transparent);
+  border-color: color-mix(in srgb, var(--orange) 30%, transparent);
+}
+
+.todo-column-manager-input {
+  min-width: 0;
+  padding: 0.45rem 0.55rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-primary);
+  font-size: 0.8125rem;
+  font-family: var(--font);
+}
+
+.todo-column-manager-input:focus {
+  outline: none;
+  border-color: var(--border-strong);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--orange) 10%, transparent);
+}
+
+.todo-column-manager-delete {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.todo-column-manager-delete:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--red) 12%, transparent);
+  color: var(--red);
+}
+
+.todo-column-manager-delete:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.todo-column-manager-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-top: auto;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.todo-column-manager-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.todo-column-manager-total-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.todo-column-manager-equalize {
+  padding: 0.32rem 0.55rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font);
+}
+
+.todo-column-manager-equalize:hover {
+  color: var(--orange);
+  border-color: color-mix(in srgb, var(--orange) 28%, transparent);
+  background: color-mix(in srgb, var(--orange) 8%, transparent);
+}
+
+.todo-column-manager-total {
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  padding: 0.35rem 0.6rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.todo-column-manager-total.is-valid {
+  color: #86efac;
+  border-color: rgba(74, 222, 128, 0.22);
+  background: rgba(74, 222, 128, 0.08);
+}
+
+.todo-column-manager-total.is-invalid {
+  color: #fca5a5;
+  border-color: rgba(248, 113, 113, 0.22);
+  background: rgba(248, 113, 113, 0.08);
+}
+
+.todo-column-manager-layout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+}
+
+.todo-column-manager-slider {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex: 1 1 14rem;
+  min-width: min(100%, 14rem);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.todo-column-manager-slider label {
+  white-space: nowrap;
+  min-width: 5.5rem;
+}
+
+.todo-column-manager-slider .todo-customize-range {
+  flex: 1;
+}
+
+.todo-column-manager-slider span:last-child {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--orange);
+  min-width: 2.8rem;
+  text-align: right;
+}
+
+.todo-column-manager-add {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.todo-column-manager-add-input {
+  flex: 1;
+  padding: 0.55rem 0.65rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text-primary);
+  font-size: 0.8125rem;
+  font-family: var(--font);
+}
+
+.todo-column-manager-add-input:focus {
+  outline: none;
+  border-color: var(--border-strong);
+}
+
+.todo-column-manager-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  white-space: nowrap;
+  font-size: 0.8125rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-strong);
+  background: var(--surface-2);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: opacity 0.2s;
+  font-family: var(--font);
+}
+
+.todo-column-manager-add-btn:hover {
+  opacity: 0.88;
+}
+
+/* Grid customize + shared settings fields */
+.todo-customize-modal.todo-app-modal {
+  max-width: 26rem;
+}
+
+.todo-customize-desc {
+  margin: 0 0 1rem;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.todo-customize-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  max-height: min(52vh, 360px);
+  margin-bottom: 1rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+}
+
+.todo-customize-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.todo-customize-section-title {
+  margin: 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.todo-customize-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.05);
+  flex-shrink: 0;
+}
+
+.todo-customize-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.todo-customize-field-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.todo-customize-field-header label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.todo-customize-field-value {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--orange);
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono);
+}
+
+.todo-customize-range {
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  appearance: none;
+  -webkit-appearance: none;
+  accent-color: var(--orange);
+  background: color-mix(in srgb, var(--text-primary) 14%, transparent);
+  border: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.todo-customize-range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text-primary) 14%, transparent);
+}
+
+.todo-customize-range::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text-primary) 14%, transparent);
+  border: none;
+}
+
+.todo-customize-range::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  margin-top: -6px;
+  border-radius: 50%;
+  background: var(--orange);
+  border: 2px solid var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.todo-customize-range::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--orange);
+  border: 2px solid var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.todo-customize-reset {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font);
+}
+
+.todo-customize-reset:hover {
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+  background: color-mix(in srgb, var(--surface-2) 80%, var(--orange-muted));
+}
+
+.todo-recycle-bin {
+  max-width: 30rem;
+}
+
+.todo-recycle-bin-desc {
+  margin: 0 0 1rem;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.todo-recycle-bin-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 8rem;
+  border-radius: var(--radius-sm);
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text-tertiary);
+  font-size: 0.8125rem;
+}
+
+.todo-recycle-bin-list--panel {
+  max-height: min(28rem, 50vh);
+  overflow-y: auto;
+}
+
+.todo-recycle-bin-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  max-height: min(50vh, 340px);
+  overflow-y: auto;
+  margin-bottom: 0.85rem;
+}
+
+.todo-recycle-bin-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--surface-2);
+}
+
+.todo-recycle-bin-row-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.todo-recycle-bin-title {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.todo-recycle-bin-meta {
+  font-size: 0.6875rem;
+  color: var(--text-tertiary);
+}
+
+.todo-recycle-bin-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.todo-recycle-bin-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.38rem 0.55rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font);
+}
+
+.todo-recycle-bin-btn--restore:hover {
+  color: #86efac;
+  border-color: rgba(74, 222, 128, 0.28);
+  background: rgba(74, 222, 128, 0.08);
+}
+
+.todo-recycle-bin-btn--purge {
+  padding: 0.38rem;
+}
+
+.todo-recycle-bin-btn--purge:hover {
+  color: var(--red);
+  border-color: color-mix(in srgb, var(--red) 28%, transparent);
+  background: color-mix(in srgb, var(--red) 10%, transparent);
+}
+
+.todo-recycle-bin-empty-all {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font);
+}
+
+.todo-recycle-bin-empty-all:hover {
+  color: var(--red);
+  border-color: color-mix(in srgb, var(--red) 24%, transparent);
+}
+
+@media (max-width: 640px) {
+  .todo-kanban-board {
+    --todo-column-min: 120px;
+  }
+
+  .todo-column-manager--wide {
+    width: calc(100vw - 1rem);
+    min-height: auto;
+    padding: 1rem;
+  }
+
+  .todo-column-manager-footer {
+    gap: 0.75rem;
+  }
+}

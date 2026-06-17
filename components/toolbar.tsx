@@ -1,7 +1,7 @@
 'use client';
 
 import { useCanvasStore } from '@/lib/store';
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect } from 'react';
 import { Plus, Download, Upload, Trash2, RotateCcw, ZoomIn, ZoomOut } from 'lucide-react';
 
 export default function Toolbar() {
@@ -12,34 +12,6 @@ export default function Toolbar() {
   const setViewport = useCanvasStore((state) => state.setViewport);
   const viewport = useCanvasStore((state) => state.viewport);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [sidebarWidth, setSidebarWidth] = useState(280);
-
-  // Detect sidebar width
-  useEffect(() => {
-    const updateSidebarWidth = () => {
-      const sidebar = document.querySelector('.sidebar-container');
-      if (sidebar) {
-        const width = sidebar.getBoundingClientRect().width;
-        setSidebarWidth(width);
-      }
-    };
-
-    updateSidebarWidth();
-    const observer = new MutationObserver(updateSidebarWidth);
-    const sidebar = document.querySelector('.sidebar-container');
-    if (sidebar) {
-      observer.observe(sidebar, {
-        attributes: true,
-        attributeFilter: ['class'],
-      });
-    }
-
-    window.addEventListener('resize', updateSidebarWidth);
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('resize', updateSidebarWidth);
-    };
-  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -121,7 +93,7 @@ export default function Toolbar() {
       aria-label="Canvas controls"
       style={{
         background: 'rgba(0, 0, 0, 0.3)',
-        left: `calc(${sidebarWidth}px + (100vw - ${sidebarWidth}px) / 2)`,
+        left: '50%',
         transform: 'translateX(-50%)',
       }}
     >

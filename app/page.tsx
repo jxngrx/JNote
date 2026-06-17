@@ -8,11 +8,14 @@ import { useAreaStore } from '@/lib/area-store';
 import { useTodoStore } from '@/lib/todo-store';
 import Canvas from '@/components/canvas';
 import Toolbar from '@/components/toolbar';
-import Sidebar from '@/components/sidebar';
+import AppNavigation from '@/components/app-navigation';
 import PagesMode from '@/components/pages-mode';
 import AreaMode from '@/components/area-mode';
 import TodoMode from '@/components/todo-mode';
 import WorldTimeMode from '@/components/world-time-mode';
+import FloatingClockWidgets from '@/components/floating-clock-widgets';
+import AppBackground from '@/components/app-background';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
@@ -41,7 +44,8 @@ export default function Home() {
       const isTyping = target.tagName === 'INPUT' ||
                        target.tagName === 'TEXTAREA' ||
                        target.isContentEditable ||
-                       target.closest('[contenteditable="true"]');
+                       target.closest('[contenteditable="true"]') ||
+                       target.closest('.ProseMirror');
 
       if (isTyping) return;
 
@@ -97,35 +101,40 @@ export default function Home() {
 
   return (
     <div className="app-container">
-      <Sidebar />
-      <main
-        className={`content-area ${
-          mode === 'pages'
-            ? 'pages-mode'
-            : mode === 'area'
-              ? 'area-mode'
-              : mode === 'todo'
-                ? 'todo-mode'
-                : mode === 'world-time'
-                  ? 'world-time-mode'
-                  : 'sticky-notes-mode'
-        }`}
-      >
-        {mode === 'sticky-notes' ? (
-          <>
-            <Canvas />
-            <Toolbar />
-          </>
-        ) : mode === 'pages' ? (
-          <PagesMode />
-        ) : mode === 'area' ? (
-          <AreaMode />
-        ) : mode === 'world-time' ? (
-          <WorldTimeMode />
-        ) : (
-          <TodoMode />
-        )}
-      </main>
+      <AppBackground />
+      <FloatingClockWidgets />
+      <AppNavigation>
+        <main
+          className={`content-area ${
+            mode === 'pages'
+              ? 'pages-mode'
+              : mode === 'area'
+                ? 'area-mode'
+                : mode === 'todo'
+                  ? 'todo-mode'
+                  : mode === 'world-time'
+                    ? 'world-time-mode'
+                    : 'sticky-notes-mode'
+          }`}
+        >
+          {mode === 'sticky-notes' ? (
+            <>
+              <Canvas />
+              <Toolbar />
+            </>
+          ) : mode === 'pages' ? (
+            <PagesMode />
+          ) : mode === 'area' ? (
+            <AreaMode />
+          ) : mode === 'world-time' ? (
+            <ScrollArea className="content-scroll-area" fill>
+              <WorldTimeMode />
+            </ScrollArea>
+          ) : (
+            <TodoMode />
+          )}
+        </main>
+      </AppNavigation>
     </div>
   );
 }
