@@ -18,6 +18,7 @@ import ThemeInitScript from '@/components/theme-init-script'
 import TypographyInitScript from '@/components/typography-init-script'
 import './globals.css'
 import '@excalidraw/excalidraw/index.css'
+import { getSiteUrl } from '@/lib/site-url'
 
 const dmSans = DM_Sans({
   subsets: ['latin'],
@@ -94,13 +95,7 @@ const syne = Syne({
   display: 'swap',
 })
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
-
-if (!siteUrl) {
-  throw new Error(
-    'NEXT_PUBLIC_SITE_URL is required. Copy .env.example to .env.local and set your public site URL.'
-  );
-}
+const siteUrl = getSiteUrl()
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

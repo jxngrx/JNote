@@ -212,7 +212,7 @@ notes_apps/
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `NEXT_PUBLIC_SITE_URL` | **Yes** | Public canonical URL for metadata, Open Graph, and `metadataBase`. Example: `https://noterx.example.com/` |
+| `NEXT_PUBLIC_SITE_URL` | **Yes** (local) / Optional (Vercel) | Public canonical URL for metadata, Open Graph, and `metadataBase`. Example: `https://noterx.example.com/`. On Vercel, falls back to `VERCEL_PROJECT_PRODUCTION_URL` or `VERCEL_URL` when unset. Required for local `yarn build` / `yarn dev`. |
 
 No other environment variables are used in the current codebase.
 
