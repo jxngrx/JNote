@@ -101,6 +101,11 @@
   background: transparent;
 }
 
+.app-container:has(.app-background[data-active='true']) .content-area.sticky-notes-mode,
+.app-container:has(.app-background[data-active='true']) .canvas-container {
+  background: transparent;
+}
+
 .app-container:has(.app-background[data-active='true']) .content-area.pages-mode,
 .app-container:has(.app-background[data-active='true']) .content-area.area-mode {
   background: transparent;
