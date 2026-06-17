@@ -211,7 +211,7 @@ export default function PomodoroMode() {
       <div className="pomodoro-shell">
         <header className="pomodoro-header app-readable-panel">
           <div className="pomodoro-header-copy">
-            <p className="pomodoro-eyebrow">Noterx · Focus</p>
+            <p className="pomodoro-eyebrow">JNote · Focus</p>
             <h1 className="pomodoro-title">Pomodoro</h1>
           </div>
           <button

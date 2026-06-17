@@ -50,7 +50,7 @@ export async function GET(request: Request) {
     const response = await safeFetch(url, {
       headers: {
         'User-Agent':
-          'Mozilla/5.0 (compatible; NoterxLinkPreview/1.0; +https://github.com/)',
+          'Mozilla/5.0 (compatible; JNoteLinkPreview/1.0; +https://github.com/jxngrx/notes_apps)',
         Accept: 'text/html,application/xhtml+xml',
         'Accept-Language': 'en-US,en;q=0.9',
       },

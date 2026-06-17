@@ -1,6 +1,6 @@
-# Contributing to Noterx
+# Contributing to JNote
 
-Thanks for your interest in contributing. Noterx is a local-first productivity app built with Next.js, and every improvement — bug fix, UI polish, or new feature — helps.
+Thanks for your interest in contributing. JNote is a local-first productivity app built with Next.js, and every improvement — bug fix, UI polish, or new feature — helps.
 
 ## Getting started locally
 

@@ -39,7 +39,7 @@ export default function WorldTimeMode() {
         <div className="wt-shell">
           <header className="wt-header app-readable-panel">
             <div>
-              <p className="page-label">Noterx · World</p>
+              <p className="page-label">JNote · World</p>
               <h1 className="page-title">
                 <strong>World</strong> Clock
               </h1>

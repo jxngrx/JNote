@@ -100,14 +100,14 @@ const siteUrl = getSiteUrl()
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'Noterx',
-    template: '%s | Noterx',
+    default: 'JNote',
+    template: '%s | JNote',
   },
-  applicationName: 'Noterx',
+  applicationName: 'JNote',
   description:
-    'Noterx is a fast, minimalist note‑taking app to capture ideas, create and organize notes, and stay productive across your day.',
+    'JNote is a fast, minimalist note‑taking app to capture ideas, create and organize notes, and stay productive across your day.',
   keywords: [
-    'Noterx',
+    'JNote',
     'note taking app',
     'notes',
     'sticky notes',
@@ -135,16 +135,16 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     url: '/',
-    siteName: 'Noterx',
-    title: 'Noterx',
+    siteName: 'JNote',
+    title: 'JNote',
     description:
-      'Capture ideas instantly, organize your notes, and keep everything searchable with Noterx.',
+      'Capture ideas instantly, organize your notes, and keep everything searchable with JNote.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Noterx',
+    title: 'JNote',
     description:
-      'Capture ideas instantly, organize your notes, and keep everything searchable with Noterx.',
+      'Capture ideas instantly, organize your notes, and keep everything searchable with JNote.',
   },
   icons: {
     icon: '/globe.svg',
