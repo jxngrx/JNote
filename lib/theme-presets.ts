@@ -38,7 +38,7 @@ function light(
 
 /** Dark palettes — inspired by Monkeytype & popular editor themes */
 export const DARK_THEME_PRESETS: ThemePreset[] = [
-  dark('noterx-dark', 'Noterx', {
+  dark('noterx-dark', 'JNote', {
     bg: '#0a0a0a',
     surface: '#141414',
     surface2: '#1c1c1c',
@@ -302,7 +302,7 @@ export const DARK_THEME_PRESETS: ThemePreset[] = [
 
 /** Light palettes */
 export const LIGHT_THEME_PRESETS: ThemePreset[] = [
-  light('noterx-light', 'Noterx Light', {
+  light('noterx-light', 'JNote Light', {
     bg: '#f5f4f0',
     surface: '#ffffff',
     surface2: '#edecea',

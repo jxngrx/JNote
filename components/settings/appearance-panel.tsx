@@ -105,7 +105,7 @@ export default function AppearancePanel() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `noterx-theme-${Date.now()}.json`;
+    a.download = `jnote-theme-${Date.now()}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };

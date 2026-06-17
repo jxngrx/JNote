@@ -43,7 +43,7 @@ export const APP_PRIMARY_FONTS: AppFontOption[] = [
     fallback: 'sans-serif',
     category: 'sans',
     supportsItalic: false,
-    description: 'Clean product UI — default Noterx voice.',
+    description: 'Clean product UI — default JNote voice.',
   },
   {
     id: 'space-grotesk',

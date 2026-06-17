@@ -1,6 +1,6 @@
 <div align="center">
 
-# Noterx
+# JNote
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Build](https://img.shields.io/badge/Build-passing-brightgreen)](https://github.com/jxngrx/notes_apps)
@@ -11,7 +11,7 @@
 [![Typing SVG](https://readme-typing-svg.herokuapp.com?font=DM+Sans&weight=500&size=22&duration=4000&pause=1200&color=1A1A1A&center=true&vCenter=true&width=520&lines=Capture+ideas.+Organize+work.+Stay+in+flow.)](https://github.com/jxngrx/notes_apps)
 
 <!-- TODO: replace with actual demo GIF/screenshot -->
-![Noterx demo placeholder](https://placehold.co/1200x640/1C1C1A/F0EDE8?text=Noterx+Demo+Screenshot+Coming+Soon)
+![JNote demo placeholder](https://placehold.co/1200x640/1C1C1A/F0EDE8?text=JNote+Demo+Screenshot+Coming+Soon)
 
 *A fast, local-first productivity workspace — sticky notes, rich pages, drawings, kanban todos, and world clocks in one app.*
 
@@ -34,7 +34,7 @@
 
 ## Features
 
-Noterx is a multi-mode productivity app. All workspace data stays in your browser (`localStorage` / IndexedDB) unless you export it.
+JNote is a multi-mode productivity app. All workspace data stays in your browser (`localStorage` / IndexedDB) unless you export it.
 
 ### Sticky Notes
 
@@ -73,7 +73,7 @@ Interactive 3D globe (amCharts) for picking countries/timezones, floating clock 
 
 ### Appearance & Personalization
 
-- Light/dark theme presets (Noterx, Monkeytype-inspired palettes, and more)
+- Light/dark theme presets (JNote, Monkeytype-inspired palettes, and more)
 - Custom typography (primary + mono secondary fonts)
 - Photo, gradient, and custom wallpaper backgrounds with contrast-aware UI tokens
 - Magnetic navigation dock with per-mode shortcuts
@@ -170,7 +170,7 @@ Ensure browser `localStorage` is enabled (DevTools → Application → Local Sto
 
 **Import fails**
 
-Exports must be valid JSON from Noterx's export action for that mode.
+Exports must be valid JSON from JNote's export action for that mode.
 
 </details>
 
@@ -212,7 +212,7 @@ notes_apps/
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `NEXT_PUBLIC_SITE_URL` | **Yes** (local) / Optional (Vercel) | Public canonical URL for metadata, Open Graph, and `metadataBase`. Example: `https://noterx.example.com/`. On Vercel, falls back to `VERCEL_PROJECT_PRODUCTION_URL` or `VERCEL_URL` when unset. Required for local `yarn build` / `yarn dev`. |
+| `NEXT_PUBLIC_SITE_URL` | **Yes** (local) / Optional (Vercel) | Public canonical URL for metadata, Open Graph, and `metadataBase`. Example: `https://jnote.example.com/`. On Vercel, falls back to `VERCEL_PROJECT_PRODUCTION_URL` or `VERCEL_URL` when unset. Required for local `yarn build` / `yarn dev`. |
 
 No other environment variables are used in the current codebase.
 
