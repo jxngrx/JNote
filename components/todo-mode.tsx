@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { normalizeTodoList, useTodoStore } from '@/lib/todo-store';
 import type { TodoItem } from '@/lib/todo-store';
@@ -9,7 +9,7 @@ import {
   getColumnByRole,
   isDoneColumnId,
 } from '@/lib/todo-column-utils';
-import { Check, Plus, SlidersHorizontal, Trash2 } from 'lucide-react';
+import { Check, Pencil, Plus, SlidersHorizontal, Trash2 } from 'lucide-react';
 import {
   useTodoSettingsStore,
   todoSettingsToCssVars,
@@ -49,13 +49,45 @@ type TaskCardProps = {
   task: TodoItem;
   onToggle: () => void;
   onDelete: () => void;
+  onUpdate: (title: string) => void;
 };
 
-function TaskCard({ task, onToggle, onDelete }: TaskCardProps) {
+function TaskCard({ task, onToggle, onDelete, onUpdate }: TaskCardProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [draft, setDraft] = useState(task.title);
+  const inputRef = useRef<HTMLInputElement>(null);
   const timeLabel = formatRelativeTime(task.createdAt);
 
+  useEffect(() => {
+    setDraft(task.title);
+  }, [task.title]);
+
+  useEffect(() => {
+    if (isEditing) {
+      inputRef.current?.focus();
+      inputRef.current?.select();
+    }
+  }, [isEditing]);
+
+  const commitEdit = () => {
+    const trimmed = draft.trim();
+    if (!trimmed) {
+      setDraft(task.title);
+      setIsEditing(false);
+      return;
+    }
+    if (trimmed !== task.title) {
+      onUpdate(trimmed);
+    }
+    setIsEditing(false);
+  };
+
   return (
-    <article className={`todo-task todo-task--grid ${task.completed ? 'completed' : ''}`}>
+    <article
+      className={`todo-task todo-task--grid ${task.completed ? 'completed' : ''}${
+        isEditing ? ' is-editing' : ''
+      }`}
+    >
       <button
         type="button"
         onClick={onToggle}
@@ -66,13 +98,52 @@ function TaskCard({ task, onToggle, onDelete }: TaskCardProps) {
       </button>
 
       <div className="todo-task-main">
-        <span className="todo-task-title" title={task.title}>
-          {task.title}
-        </span>
-        {timeLabel && <span className="todo-task-meta">{timeLabel}</span>}
+        {isEditing ? (
+          <input
+            ref={inputRef}
+            className="todo-task-edit-input"
+            value={draft}
+            onChange={(event) => setDraft(event.target.value)}
+            onBlur={commitEdit}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                event.preventDefault();
+                commitEdit();
+              }
+              if (event.key === 'Escape') {
+                event.preventDefault();
+                setDraft(task.title);
+                setIsEditing(false);
+              }
+            }}
+            aria-label="Edit task"
+          />
+        ) : (
+          <>
+            <span
+              className="todo-task-title"
+              title={task.title}
+              onDoubleClick={() => setIsEditing(true)}
+            >
+              {task.title}
+            </span>
+            {timeLabel && <span className="todo-task-meta">{timeLabel}</span>}
+          </>
+        )}
       </div>
 
       <div className="todo-task-actions">
+        {!isEditing ? (
+          <button
+            type="button"
+            onClick={() => setIsEditing(true)}
+            className="todo-action-btn"
+            title="Edit task"
+            aria-label="Edit task"
+          >
+            <Pencil size={13} />
+          </button>
+        ) : null}
         <button
           type="button"
           onClick={onDelete}
@@ -419,6 +490,7 @@ export default function TodoMode() {
                         task={task}
                         onToggle={() => handleToggleItem(task.id)}
                         onDelete={() => deleteItem(task.id)}
+                        onUpdate={(title) => updateItem(task.id, { title })}
                       />
                     ))}
                   </div>

@@ -67,7 +67,11 @@ function baseExtensions(slashOptions?: SlashCommandOptions['suggestion']) {
     TableRow,
     TableCell,
     TableHeader,
-    Image.configure({ inline: false, allowBase64: true }),
+    Image.configure({
+      inline: false,
+      allowBase64: true,
+      HTMLAttributes: { class: 'page-editor-image' },
+    }),
     TextAlign.configure({ types: ['heading', 'paragraph'] }),
     UniqueId.configure({
       types: [

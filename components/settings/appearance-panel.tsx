@@ -379,6 +379,10 @@ export default function AppearancePanel() {
 
       <section className="app-settings-section">
         <h3 className="app-settings-section-title">Custom colors</h3>
+        <p className="app-settings-section-desc">
+          Every surface, text, and accent token updates live across the app —
+          cards, dock, settings, todo, pages, and world time.
+        </p>
         {THEME_COLOR_GROUPS.map((group) => (
           <div key={group.title} className="app-settings-section">
             <h4 className="app-settings-section-title">{group.title}</h4>

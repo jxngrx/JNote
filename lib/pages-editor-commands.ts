@@ -319,23 +319,48 @@ function blockCommands(): PageEditorCommand[] {
     {
       id: 'image',
       label: 'Image',
-      description: 'Upload or embed image',
+      description: 'Upload image',
       icon: ImageIcon,
-      keywords: ['photo', 'picture', 'img'],
+      keywords: ['photo', 'picture', 'img', 'upload'],
       run: (editor) => {
+        const insertPos = editor.state.selection.from;
+
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = 'image/*';
+        input.style.display = 'none';
+        document.body.appendChild(input);
+
         input.onchange = () => {
           const file = input.files?.[0];
-          if (!file || file.size > 2 * 1024 * 1024) return;
+          input.remove();
+
+          if (!file) return;
+          if (file.size > 5 * 1024 * 1024) {
+            window.alert('Image must be 5 MB or smaller.');
+            return;
+          }
+
           const reader = new FileReader();
           reader.onload = () => {
             const src = reader.result as string;
-            editor.chain().focus().setImage({ src, alt: file.name }).run();
+            if (!src.startsWith('data:')) return;
+
+            editor
+              .chain()
+              .focus()
+              .insertContentAt(insertPos, {
+                type: 'image',
+                attrs: { src, alt: file.name },
+              })
+              .run();
+          };
+          reader.onerror = () => {
+            window.alert('Could not read image file.');
           };
           reader.readAsDataURL(file);
         };
+
         input.click();
       },
     },

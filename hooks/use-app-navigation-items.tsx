@@ -22,8 +22,14 @@ import { useAreaStore } from '@/lib/area-store';
 import { useTodoStore } from '@/lib/todo-store';
 import { useTodoUiStore } from '@/lib/todo-ui-store';
 import { useSettingsUiStore } from '@/lib/settings-ui-store';
+import { useBookmarksUiStore } from '@/lib/bookmarks-ui-store';
+import { useBookmarksStore } from '@/lib/bookmarks-store';
 import { useWorldTimeUiStore } from '@/lib/world-time-ui-store';
+import BookmarksDockIcon from '@/components/bookmarks-dock-icon';
+import GithubDockAvatar from '@/components/github-dock-avatar';
 import { getTodoListInitials } from '@/lib/todo-list-initials';
+import { useGithubSettingsStore } from '@/lib/github-settings-store';
+import { useGithubUiStore } from '@/lib/github-ui-store';
 import type { AppMode } from '@/lib/types';
 
 export type TodoListMenuState = {
@@ -54,6 +60,15 @@ export function useAppNavigationItems() {
   const worldTimeView = useWorldTimeUiStore((s) => s.view);
   const setWorldTimeView = useWorldTimeUiStore((s) => s.setView);
   const openSettings = useSettingsUiStore((s) => s.openSettings);
+  const bookmarksOpen = useBookmarksUiStore((s) => s.open);
+  const toggleBookmarks = useBookmarksUiStore((s) => s.toggleBookmarks);
+  const bookmarkCount = useBookmarksStore((s) => s.bookmarks.length);
+  const githubUsername = useGithubSettingsStore((s) => s.username);
+  const githubAvatarUrl = useGithubSettingsStore((s) => s.avatarUrl);
+  const githubOpen = useGithubUiStore((s) => s.open);
+  const toggleGithub = useGithubUiStore((s) => s.toggleGithub);
+  const openGithub = useGithubUiStore((s) => s.openGithub);
+  const setGithubPinned = useGithubUiStore((s) => s.setPinned);
 
   const [todoListMenu, setTodoListMenu] = useState<TodoListMenuState>(null);
 
@@ -220,6 +235,14 @@ export function useAppNavigationItems() {
 
     navItems.push({ type: 'separator', id: 'utility-sep' });
     navItems.push({
+      id: 'bookmarks',
+      icon: <BookmarksDockIcon />,
+      label: 'Bookmarks',
+      isActive: bookmarksOpen,
+      badge: bookmarkCount > 0 ? bookmarkCount : undefined,
+      onClick: toggleBookmarks,
+    });
+    navItems.push({
       id: 'shortcuts',
       icon: <Keyboard size={18} />,
       label: 'Shortcuts',
@@ -231,6 +254,22 @@ export function useAppNavigationItems() {
       label: 'Settings',
       onClick: () => openSettings('appearance'),
     });
+
+    if (githubUsername) {
+      navItems.push({
+        id: 'github',
+        icon: (
+          <GithubDockAvatar username={githubUsername} avatarUrl={githubAvatarUrl} />
+        ),
+        label: 'GitHub',
+        isActive: githubOpen,
+        onClick: () => toggleGithub(),
+        onMouseEnter: () => {
+          setGithubPinned(true);
+          openGithub();
+        },
+      });
+    }
 
     return navItems;
   }, [
@@ -252,6 +291,15 @@ export function useAppNavigationItems() {
     worldTimeView,
     setWorldTimeView,
     openSettings,
+    bookmarksOpen,
+    toggleBookmarks,
+    bookmarkCount,
+    githubUsername,
+    githubAvatarUrl,
+    githubOpen,
+    toggleGithub,
+    openGithub,
+    setGithubPinned,
   ]);
 
   const onReorder =

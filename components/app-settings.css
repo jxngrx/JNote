@@ -6,7 +6,7 @@
   display: flex;
   align-items: stretch;
   justify-content: flex-end;
-  background: color-mix(in srgb, var(--bg) 22%, rgba(0, 0, 0, 0.58));
+  background: color-mix(in srgb, var(--bg) 35%, var(--ui-scrim-heavy));
   backdrop-filter: blur(8px);
   animation: appSettingsFadeIn 0.22s cubic-bezier(0.4, 0, 0.2, 1);
   overscroll-behavior: contain;

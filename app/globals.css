@@ -4,11 +4,11 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Dark gradient background theme for sticky notes canvas */
-  --background: oklch(0.08 0 0);
-  --foreground: oklch(0.95 0 0);
-  --canvas-bg: oklch(0.1 0.02 240);
-  --note-shadow: rgba(0, 0, 0, 0.6);
+  /* Shadcn + canvas — light defaults */
+  --background: oklch(0.97 0.01 90);
+  --foreground: oklch(0.2 0 0);
+  --canvas-bg: oklch(0.97 0.01 90);
+  --note-shadow: rgba(0, 0, 0, 0.18);
   --sticky-yellow: oklch(0.92 0.15 100);
   --sticky-green: oklch(0.85 0.12 160);
   --sticky-blue: oklch(0.8 0.12 220);
@@ -47,7 +47,60 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
-  /* Product design system — declared last so shadcn tokens cannot override */
+  /* Product design system — light defaults; dark overrides below */
+  --bg: #f5f4f0;
+  --surface: #ffffff;
+  --surface-2: #edecea;
+  --border: rgba(0, 0, 0, 0.08);
+  --border-strong: rgba(0, 0, 0, 0.14);
+  --text-primary: #1a1a1a;
+  --text-secondary: #6b6965;
+  --text-tertiary: #a09d99;
+  --accent: #c45a3a;
+  --orange: #c45a3a;
+  --orange-muted: color-mix(in srgb, var(--orange) 14%, transparent);
+  --red: #e8432d;
+  --green: #1e8a4a;
+  --github-contrib-0: color-mix(in srgb, var(--text-tertiary) 18%, var(--surface-2));
+  --github-contrib-1: color-mix(in srgb, var(--green) 35%, var(--surface-2));
+  --github-contrib-2: color-mix(in srgb, var(--green) 55%, var(--surface-2));
+  --github-contrib-3: color-mix(in srgb, var(--green) 72%, var(--surface-2));
+  --github-contrib-4: color-mix(in srgb, var(--green) 88%, var(--surface-2));
+  --amber: #c47b1a;
+  --blue: #2c6edb;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-pill: 100px;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+  --ui-alpha-1: color-mix(in srgb, var(--text-primary) 3%, transparent);
+  --ui-alpha-2: color-mix(in srgb, var(--text-primary) 5%, transparent);
+  --ui-alpha-3: color-mix(in srgb, var(--text-primary) 8%, transparent);
+  --ui-alpha-4: color-mix(in srgb, var(--text-primary) 11%, transparent);
+  --ui-alpha-5: color-mix(in srgb, var(--text-primary) 15%, transparent);
+  --ui-alpha-6: color-mix(in srgb, var(--text-primary) 20%, transparent);
+  --ui-scrim: color-mix(in srgb, var(--bg) 70%, transparent);
+  --ui-scrim-heavy: color-mix(in srgb, var(--bg) 55%, transparent);
+  --ui-floating: color-mix(in srgb, var(--surface) 90%, transparent);
+  --ui-on-accent: #ffffff;
+  --note-inset: color-mix(in srgb, var(--text-primary) 6%, transparent);
+  --note-border: color-mix(in srgb, var(--text-primary) 5%, transparent);
+  --font-primary: var(--font-dm-sans), 'DM Sans', sans-serif;
+  --font-secondary: var(--font-dm-mono), 'DM Mono', monospace;
+  --font: var(--font-primary);
+  --font-mono: var(--font-secondary);
+  --z-dropdown: 20;
+  --z-sticky: 50;
+  --z-modal: 100;
+  --z-toast: 200;
+  --z-eye: 10000;
+  --z-floating-clock: 10100;
+}
+
+.dark,
+html[data-theme-mode='dark'] {
   --bg: #0a0a0a;
   --surface: #141414;
   --surface-2: #1c1c1c;
@@ -59,27 +112,20 @@
   --accent: #d97757;
   --orange: #d97757;
   --orange-muted: color-mix(in srgb, var(--orange) 18%, transparent);
-  --red: #e8432d;
-  --green: #d97757;
-  --amber: #d97757;
-  --blue: #2c6edb;
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --radius-lg: 22px;
-  --radius-pill: 100px;
+  --green: #4ade80;
+  --github-contrib-0: color-mix(in srgb, var(--text-tertiary) 22%, var(--surface-2));
+  --github-contrib-1: color-mix(in srgb, var(--green) 28%, var(--surface-2));
+  --github-contrib-2: color-mix(in srgb, var(--green) 48%, var(--surface-2));
+  --github-contrib-3: color-mix(in srgb, var(--green) 68%, var(--surface-2));
+  --github-contrib-4: color-mix(in srgb, var(--green) 85%, var(--surface-2));
+  --amber: #fbbf24;
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.18), 0 1px 2px rgba(0, 0, 0, 0.12);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.24), 0 1px 4px rgba(0, 0, 0, 0.12);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.36), 0 2px 8px rgba(0, 0, 0, 0.18);
-  --font-primary: var(--font-dm-sans), 'DM Sans', sans-serif;
-  --font-secondary: var(--font-dm-mono), 'DM Mono', monospace;
-  --font: var(--font-primary);
-  --font-mono: var(--font-secondary);
-  --z-dropdown: 20;
-  --z-sticky: 50;
-  --z-modal: 100;
-  --z-toast: 200;
-  --z-eye: 10000;
-  --z-floating-clock: 10100;
+  --ui-on-accent: #0a0a0a;
+  --note-inset: color-mix(in srgb, white 10%, transparent);
+  --note-border: color-mix(in srgb, white 5%, transparent);
+  --note-shadow: rgba(0, 0, 0, 0.6);
 }
 
 .dark {
@@ -236,16 +282,16 @@
   min-height: 160px;
   max-width: 600px;
   max-height: 800px;
-  box-shadow: 0 10px 30px var(--note-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 30px var(--note-shadow), inset 0 1px 0 var(--ui-alpha-4);
   transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--ui-alpha-2);
   backdrop-filter: blur(4px);
   overflow: hidden;
 }
 
 /* enhanced hover effect with lift animation */
 .sticky-note:hover {
-  box-shadow: 0 20px 50px var(--note-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 50px var(--note-shadow), inset 0 1px 0 var(--ui-alpha-4);
   transform: translateY(-4px) scale(1.02);
 }
 
@@ -281,16 +327,16 @@
 /* enhanced toolbar button styling */
 .toolbar-icon-btn {
   @apply w-7 h-7 flex items-center justify-center rounded-md text-xs cursor-pointer;
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.9);
+  background: var(--ui-alpha-3);
+  color: var(--text-primary);
   transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--ui-alpha-4);
 }
 
 .toolbar-icon-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--ui-alpha-5);
   transform: scale(1.1);
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: var(--ui-alpha-6);
 }
 
 .toolbar-icon-btn:active {
@@ -310,8 +356,8 @@
 /* added visible resize handles on all corners and edges */
 .resize-handle {
   @apply absolute opacity-0 group-hover:opacity-100 transition-opacity;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--ui-alpha-5);
+  border: 1px solid var(--ui-alpha-6);
   backdrop-filter: blur(4px);
   z-index: 10;
 }
@@ -396,14 +442,14 @@
 .color-picker,
 .text-style-picker {
   @apply backdrop-blur-lg;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--ui-alpha-4);
 }
 
 /* Global toolbar enhancements */
 .fixed[role="toolbar"] {
   @apply backdrop-blur-2xl;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--ui-scrim);
+  border: 1px solid var(--border);
 }
 
 /* App Container Layout */
@@ -501,10 +547,28 @@ html[data-typography-active='true'] .content-area {
     --accent: #c45a3a;
     --orange: #c45a3a;
     --orange-muted: color-mix(in srgb, var(--orange) 14%, transparent);
-    --green: #c45a3a;
+    --green: #1e8a4a;
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
     --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
     --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+    --ui-on-accent: #ffffff;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme-active='true']) {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface-2: #1c1c1c;
+    --border: rgba(255, 255, 255, 0.06);
+    --border-strong: rgba(255, 255, 255, 0.1);
+    --text-primary: #ececec;
+    --text-secondary: #6f6f6f;
+    --text-tertiary: #454545;
+    --accent: #d97757;
+    --orange: #d97757;
+    --green: #4ade80;
+    --ui-on-accent: #0a0a0a;
   }
 }
 
@@ -541,7 +605,7 @@ button.btn-primary {
   padding: 10px 20px;
   border-radius: var(--radius-pill);
   background-color: var(--orange);
-  color: #0a0a0a;
+  color: var(--bg);
   box-shadow: var(--shadow-sm);
 }
 
@@ -779,11 +843,22 @@ button.btn-lg {
 
 .card {
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius-lg);
+  color: var(--text-primary);
   box-shadow: var(--shadow-sm);
   transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1),
     transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html[data-theme-mode='light'] .card {
+  background: var(--surface);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-md);
+}
+
+html[data-theme-mode='dark'] .card {
+  border-color: var(--border);
 }
 
 .card:hover {
@@ -1251,7 +1326,7 @@ button.floating-clock-unpin:hover {
   position: fixed;
   inset: 0;
   z-index: var(--z-modal);
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--ui-scrim);
   backdrop-filter: blur(4px);
   animation: fadeIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -1271,7 +1346,7 @@ button.floating-clock-unpin:hover {
   border-radius: var(--radius-lg);
   border: 1px solid var(--border);
   background: var(--surface);
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.36);
+  box-shadow: var(--shadow-lg);
   animation: wtModalIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -1629,8 +1704,8 @@ button.floating-clock-unpin:hover {
 /* Sidebar Styles - Black Theme */
 .sidebar-container {
   @apply h-full flex flex-col relative;
-  background: #0C0C0C;
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg);
+  border-right: 1px solid var(--ui-alpha-3);
   font-family: var(--font-primary, var(--font));
   transition: width 0.3s ease;
   border-radius: 12px 0 0 12px;
@@ -1646,7 +1721,8 @@ button.floating-clock-unpin:hover {
 }
 
 .sidebar-header {
-  @apply flex items-center py-3 border-b border-white/5;
+  @apply flex items-center py-3 border-b;
+  border-color: var(--border);
   min-height: 56px;
 }
 
@@ -1668,7 +1744,7 @@ button.floating-clock-unpin:hover {
 
 .sidebar-toggle-btn {
   @apply p-1.5 rounded-lg transition-colors;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-secondary);
   background: transparent;
   flex-shrink: 0;
 }
@@ -1682,8 +1758,8 @@ button.floating-clock-unpin:hover {
 }
 
 .sidebar-toggle-btn:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.9);
+  background: var(--ui-alpha-2);
+  color: var(--text-primary);
 }
 
 .sidebar-nav {
@@ -1708,7 +1784,7 @@ button.floating-clock-unpin:hover {
 /* Navigation Items */
 .nav-item {
   @apply flex items-center gap-3 py-2.5 rounded-lg transition-all duration-150 relative;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   background: transparent;
   border: none;
   text-align: left;
@@ -1765,8 +1841,8 @@ button.floating-clock-unpin:hover {
 }
 
 .nav-item:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.9);
+  background: var(--ui-alpha-2);
+  color: var(--text-primary);
 }
 
 .nav-item.active {
@@ -1797,7 +1873,7 @@ button.floating-clock-unpin:hover {
 
 .nav-expand-btn {
   @apply w-5 h-5 flex items-center justify-center rounded text-xs font-semibold;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-tertiary);
   background: transparent;
   border: none;
   cursor: pointer;
@@ -1809,7 +1885,7 @@ button.floating-clock-unpin:hover {
 }
 
 .nav-expand-btn:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--ui-alpha-2);
 }
 
 .nav-item.active .nav-expand-btn:hover {
@@ -1843,12 +1919,12 @@ button.floating-clock-unpin:hover {
   top: 0;
   bottom: 0;
   width: 1px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--ui-alpha-4);
 }
 
 .nav-subitem {
   @apply flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-150 relative;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-secondary);
   cursor: pointer;
   margin-left: 8px;
 }
@@ -1860,22 +1936,22 @@ button.floating-clock-unpin:hover {
   top: 50%;
   width: 8px;
   height: 1px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--ui-alpha-4);
 }
 
 .nav-subitem:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.9);
+  background: var(--ui-alpha-2);
+  color: var(--text-primary);
 }
 
 .nav-subitem.active {
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.95);
+  background: var(--ui-alpha-4);
+  color: var(--text-primary);
 }
 
 .nav-subitem.empty {
   @apply text-xs;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-tertiary);
   cursor: default;
 }
 
@@ -1891,7 +1967,7 @@ button.floating-clock-unpin:hover {
 
 .nav-subitem-delete {
   @apply p-1.5 rounded opacity-0 transition-all;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-tertiary);
   background: transparent;
   border: none;
   cursor: pointer;
@@ -1918,7 +1994,7 @@ button.floating-clock-unpin:hover {
 .nav-subitem-delete:disabled:hover {
   transform: none;
   background: transparent;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-tertiary);
 }
 
 /* Pages List */
@@ -1928,13 +2004,13 @@ button.floating-clock-unpin:hover {
 
 .page-item {
   @apply flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-all duration-150;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   position: relative;
 }
 
 .page-item:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.9);
+  background: var(--ui-alpha-2);
+  color: var(--text-primary);
 }
 
 .page-item.active {
@@ -1948,7 +2024,7 @@ button.floating-clock-unpin:hover {
 
 .page-delete-btn {
   @apply p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-tertiary);
 }
 
 .page-delete-btn:hover {
@@ -1967,14 +2043,14 @@ button.floating-clock-unpin:hover {
 /* Sidebar Action Buttons */
 .sidebar-action-btn {
   @apply w-full flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 mb-2;
-  background: rgba(255, 255, 255, 0.03);
-  color: rgba(255, 255, 255, 0.7);
+  background: var(--ui-alpha-1);
+  color: var(--text-secondary);
   border: 1px solid transparent;
 }
 
 .sidebar-action-btn:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.9);
+  background: var(--ui-alpha-3);
+  color: var(--text-primary);
   transform: translateX(2px);
 }
 
@@ -1992,15 +2068,16 @@ button.floating-clock-unpin:hover {
 /* Shortcuts Modal */
 .shortcuts-modal-overlay {
   @apply fixed inset-0 z-[300] flex items-center justify-center;
-  background: rgba(0, 0, 0, 0.7);
+  background: var(--ui-scrim-heavy);
   backdrop-filter: blur(4px);
   animation: fadeIn 0.2s ease-out;
 }
 
 .shortcuts-modal {
-  @apply bg-[#1A1A1A] rounded-2xl p-6 max-w-md w-full mx-4;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  @apply rounded-2xl p-6 max-w-md w-full mx-4;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
   animation: slideUp 0.3s ease-out;
 }
 
@@ -2009,17 +2086,18 @@ button.floating-clock-unpin:hover {
 }
 
 .shortcuts-modal-header h3 {
-  @apply text-xl font-semibold text-white;
+  @apply text-xl font-semibold;
+  color: var(--text-primary);
 }
 
 .close-btn {
   @apply p-1 rounded-lg transition-colors;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-secondary);
 }
 
 .close-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.9);
+  background: var(--ui-alpha-4);
+  color: var(--text-primary);
 }
 
 .shortcuts-list {
@@ -2028,14 +2106,14 @@ button.floating-clock-unpin:hover {
 
 .shortcut-item {
   @apply flex items-center justify-between py-2 px-3 rounded-lg;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--ui-alpha-1);
 }
 
 .shortcut-key {
   @apply px-2 py-1 rounded text-xs font-mono;
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--ui-alpha-4);
+  color: var(--text-primary);
+  border: 1px solid var(--ui-alpha-4);
 }
 
 /* Settings Modal */
@@ -2048,21 +2126,22 @@ button.floating-clock-unpin:hover {
 }
 
 .settings-section-title {
-  @apply text-sm font-semibold text-white/80 mb-2;
+  @apply text-sm font-semibold mb-2;
+  color: var(--text-secondary);
 }
 
 .settings-btn {
   @apply flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all;
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--ui-alpha-2);
+  color: var(--text-primary);
+  border: 1px solid var(--ui-alpha-4);
   cursor: pointer;
   text-align: left;
 }
 
 .settings-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: var(--ui-alpha-4);
+  border-color: var(--ui-alpha-6);
 }
 
 .settings-btn.danger {
@@ -2085,12 +2164,12 @@ button.floating-clock-unpin:hover {
   position: relative;
   display: flex;
   flex-direction: column;
-  background: #0c0c0c;
+  background: var(--bg);
 }
 
 .area-mode-empty {
   @apply w-full h-full flex items-center justify-center;
-  background: #0c0c0c;
+  background: var(--bg);
 }
 
 .area-toolbar {
@@ -2104,10 +2183,10 @@ button.floating-clock-unpin:hover {
   padding: 0.5rem 1rem;
   border-radius: 9999px;
   z-index: 1000;
-  background: rgba(0, 0, 0, 0.7);
+  background: var(--ui-scrim-heavy);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
   pointer-events: auto;
 }
 
@@ -2119,7 +2198,7 @@ button.floating-clock-unpin:hover {
   left: 0;
   right: 0;
   bottom: 0;
-  background: #0c0c0c;
+  background: var(--bg);
   overflow: hidden;
   cursor: crosshair;
 }
@@ -2129,7 +2208,7 @@ button.floating-clock-unpin:hover {
   width: 100%;
   height: 100%;
   display: block;
-  background: #0c0c0c;
+  background: var(--bg);
   touch-action: none;
   position: absolute;
   top: 0;
@@ -2162,7 +2241,7 @@ button.floating-clock-unpin:hover {
 .toolbar-slider {
   width: 80px;
   height: 4px;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--ui-alpha-6);
   border-radius: 2px;
   outline: none;
   -webkit-appearance: none;
@@ -2173,7 +2252,7 @@ button.floating-clock-unpin:hover {
   appearance: none;
   width: 12px;
   height: 12px;
-  background: #ffffff;
+  background: var(--text-primary);
   border-radius: 50%;
   cursor: pointer;
 }
@@ -2181,7 +2260,7 @@ button.floating-clock-unpin:hover {
 .toolbar-slider::-moz-range-thumb {
   width: 12px;
   height: 12px;
-  background: #ffffff;
+  background: var(--text-primary);
   border-radius: 50%;
   cursor: pointer;
   border: none;
@@ -2189,7 +2268,7 @@ button.floating-clock-unpin:hover {
 
 .toolbar-size-label {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   min-width: 35px;
   text-align: center;
 }
@@ -2197,7 +2276,7 @@ button.floating-clock-unpin:hover {
 .toolbar-color {
   width: 32px;
   height: 32px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--ui-alpha-6);
   border-radius: 6px;
   cursor: pointer;
   background: transparent;
@@ -2339,13 +2418,13 @@ button.floating-clock-unpin:hover {
   padding: 0.15rem 0.35rem;
   margin: 0;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--ui-alpha-3);
   background: var(--surface-2);
   outline: none;
 }
 
 .todo-title-input:focus {
-  border-color: color-mix(in srgb, var(--orange) 35%, rgba(255, 255, 255, 0.06));
+  border-color: color-mix(in srgb, var(--orange) 35%, var(--ui-alpha-3));
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--orange) 10%, transparent);
 }
 
@@ -2401,22 +2480,22 @@ button.floating-clock-unpin:hover {
 .todo-date-btn {
   @apply flex flex-col items-center justify-center px-4 py-2 rounded-lg;
   min-width: 70px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.7);
+  background: var(--ui-alpha-2);
+  border: 1px solid var(--ui-alpha-4);
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .todo-date-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: var(--ui-alpha-4);
+  border-color: var(--ui-alpha-6);
 }
 
 .todo-date-btn.selected {
-  background: rgba(255, 152, 0, 0.2);
-  border-color: #ff9800;
-  color: #ffffff;
+  background: color-mix(in srgb, var(--orange) 18%, transparent);
+  border-color: var(--orange);
+  color: var(--text-primary);
 }
 
 .todo-date-btn.today {
@@ -2425,23 +2504,23 @@ button.floating-clock-unpin:hover {
 
 .todo-date-day {
   @apply text-xs font-medium;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-tertiary);
   margin-bottom: 0.25rem;
 }
 
 .todo-date-btn.selected .todo-date-day {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
 }
 
 .todo-date-number {
   @apply text-base font-semibold;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .todo-progress-card {
   @apply mb-6 rounded-xl;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--ui-alpha-2);
+  border: 1px solid var(--ui-alpha-4);
   padding: 1.5rem;
 }
 
@@ -2455,23 +2534,23 @@ button.floating-clock-unpin:hover {
 
 .todo-progress-label {
   @apply text-lg font-semibold;
-  color: #ffffff;
+  color: var(--text-primary);
   margin-bottom: 0.25rem;
 }
 
 .todo-progress-subtitle {
   @apply text-sm;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-tertiary);
 }
 
 .todo-progress-circle {
   @apply w-16 h-16 rounded-full flex items-center justify-center;
-  background: #ff9800;
+  background: var(--orange);
 }
 
 .todo-progress-value {
   @apply text-lg font-bold;
-  color: #ffffff;
+  color: var(--bg);
 }
 
 .todo-tasks-container {
@@ -2494,7 +2573,7 @@ button.floating-clock-unpin:hover {
   padding: 3px;
   border-radius: var(--radius-sm);
   background: color-mix(in srgb, var(--surface-2) 85%, transparent);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--ui-alpha-2);
   position: sticky;
   top: 0;
   z-index: 2;
@@ -2537,7 +2616,7 @@ button.floating-clock-unpin:hover {
   min-width: 1.1rem;
   text-align: center;
   border-radius: var(--radius-pill);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--ui-alpha-2);
   color: var(--text-secondary);
   font-variant-numeric: tabular-nums;
   font-family: var(--font-mono);
@@ -2582,7 +2661,7 @@ button.floating-clock-unpin:hover {
   align-items: flex-start;
   gap: 0.5rem;
   border-radius: var(--radius-md);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--ui-alpha-2);
   background: color-mix(in srgb, var(--surface) 90%, transparent);
   box-shadow: none;
   transition:
@@ -2594,7 +2673,7 @@ button.floating-clock-unpin:hover {
 
 .todo-task:hover {
   background: color-mix(in srgb, var(--surface-2) 70%, var(--surface));
-  border-color: rgba(255, 255, 255, 0.07);
+  border-color: var(--ui-alpha-3);
   transform: translateY(-1px);
 }
 
@@ -2604,7 +2683,7 @@ button.floating-clock-unpin:hover {
 
 .todo-task.completed {
   opacity: 0.78;
-  border-color: color-mix(in srgb, var(--orange) 18%, rgba(255, 255, 255, 0.04));
+  border-color: color-mix(in srgb, var(--orange) 18%, var(--ui-alpha-2));
 }
 
 .todo-task.completed .todo-task-title {
@@ -2640,7 +2719,7 @@ button.floating-clock-unpin:hover {
   font-size: var(--todo-font-size-meta, 10px);
   padding: 0.1rem 0.35rem;
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--ui-alpha-3);
 }
 
 /* Grid variant — compact tile */
@@ -2713,9 +2792,9 @@ button.floating-clock-unpin:hover {
   width: 100%;
   padding: 0.2rem 0.35rem;
   border-radius: 5px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 152, 0, 0.45);
-  color: #ffffff;
+  background: var(--surface-2);
+  border: 1px solid color-mix(in srgb, var(--orange) 45%, var(--border));
+  color: var(--text-primary);
   font-size: 0.8125rem;
 }
 
@@ -2785,6 +2864,29 @@ button.floating-clock-unpin:hover {
   color: var(--red);
 }
 
+.todo-task-edit-input {
+  width: 100%;
+  padding: 0.25rem 0.4rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text-primary);
+  font-size: var(--todo-font-size, 13px);
+  font-family: var(--font);
+  font-weight: 500;
+  line-height: 1.4;
+  outline: none;
+}
+
+.todo-task-edit-input:focus {
+  border-color: color-mix(in srgb, var(--orange) 35%, var(--border-strong));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--orange) 12%, transparent);
+}
+
+.todo-task.is-editing .todo-task-actions {
+  opacity: 1;
+}
+
 @media (hover: none) {
   .todo-task-actions {
     opacity: 0.55;
@@ -2811,7 +2913,7 @@ button.floating-clock-unpin:hover {
   padding: 11px 14px;
   border-radius: var(--radius-sm);
   background: color-mix(in srgb, var(--surface-2) 80%, transparent);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--ui-alpha-2);
   color: var(--text-primary);
   font-size: var(--todo-font-size, 13px);
   resize: none;
@@ -2833,7 +2935,7 @@ button.floating-clock-unpin:hover {
 
 .todo-input:focus {
   outline: none;
-  border-color: color-mix(in srgb, var(--orange) 30%, rgba(255, 255, 255, 0.05));
+  border-color: color-mix(in srgb, var(--orange) 30%, var(--ui-alpha-2));
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--orange) 10%, transparent);
 }
 
@@ -2869,16 +2971,16 @@ button.floating-clock-unpin:hover {
 
 .todo-category-select {
   @apply px-3 py-3 rounded-lg;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
   font-size: 0.875rem;
   cursor: pointer;
 }
 
 .todo-category-select:focus {
   outline: none;
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: var(--ui-alpha-6);
 }
 
 .todo-add-btn {

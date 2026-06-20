@@ -5,6 +5,7 @@ const SHORTCUTS = [
   { keys: '⌘⇧P', label: 'Switch to Pages' },
   { keys: '⌘⇧A', label: 'Switch to Area' },
   { keys: '⌘⇧T', label: 'Switch to Todo' },
+  { keys: '⌘⇧B', label: 'Toggle bookmarks' },
 ] as const;
 
 export default function ShortcutsPanel() {

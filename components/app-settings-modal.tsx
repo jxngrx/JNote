@@ -12,6 +12,7 @@ import {
   Image,
   Keyboard,
   LayoutGrid,
+  Layers,
   Palette,
   Search,
   Timer,
@@ -25,6 +26,10 @@ import DataPanel from '@/components/settings/data-panel';
 import NavigationSettingsPanel from '@/components/settings/navigation-settings-panel';
 import EyeWidgetsPanel from '@/components/settings/eye-widgets-panel';
 import ShortcutsPanel from '@/components/settings/shortcuts-panel';
+import BookmarksSettingsPanel from '@/components/settings/bookmarks-settings-panel';
+import GithubSettingsPanel from '@/components/settings/github-settings-panel';
+import { GithubIcon } from '@/components/github-icon';
+import '@/components/github-settings.css';
 import TodoGridSettingsPanel from '@/components/settings/todo-grid-settings-panel';
 import TodoKanbanSettingsPanel from '@/components/settings/todo-kanban-settings-panel';
 import TodoRecycleBinPanel from '@/components/settings/todo-recycle-bin-panel';
@@ -41,7 +46,9 @@ export type SettingsSection =
   | 'todo-kanban'
   | 'recycle-bin'
   | 'data'
-  | 'shortcuts';
+  | 'shortcuts'
+  | 'bookmarks'
+  | 'github';
 
 export type SettingsSectionInput =
   | SettingsSection
@@ -99,6 +106,14 @@ const SECTION_META: Record<SettingsSection, SectionMeta> = {
   shortcuts: {
     title: 'Shortcuts',
     description: 'Keyboard navigation between modes.',
+  },
+  bookmarks: {
+    title: 'Bookmarks',
+    description: 'Fan or grid layout for saved sites.',
+  },
+  github: {
+    title: 'GitHub',
+    description: 'Profile tab in dock with contribution chart.',
   },
 };
 
@@ -203,6 +218,18 @@ const NAV_SECTIONS: NavSection[] = [
         label: 'Data',
         icon: <Database size={15} strokeWidth={2} />,
         tone: 'indigo',
+      },
+      {
+        id: 'bookmarks',
+        label: 'Bookmarks',
+        icon: <Layers size={15} strokeWidth={2} />,
+        tone: 'blue',
+      },
+      {
+        id: 'github',
+        label: 'GitHub',
+        icon: <GithubIcon size={15} />,
+        tone: 'green',
       },
       {
         id: 'shortcuts',
@@ -386,6 +413,8 @@ export default function AppSettingsModal({
             {section === 'recycle-bin' && <TodoRecycleBinPanel />}
             {section === 'data' && <DataPanel onClose={onClose} />}
             {section === 'shortcuts' && <ShortcutsPanel />}
+            {section === 'bookmarks' && <BookmarksSettingsPanel />}
+            {section === 'github' && <GithubSettingsPanel />}
           </div>
         </div>
       </div>

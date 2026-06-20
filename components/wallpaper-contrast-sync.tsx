@@ -9,7 +9,6 @@ import {
   clearWallpaperContrastState,
 } from '@/lib/wallpaper-contrast-tokens';
 import { useThemeStore } from '@/lib/theme-store';
-import { applyThemeToDocument } from '@/lib/theme-utils';
 
 export default function WallpaperContrastSync() {
   const kind = useBackgroundSettingsStore((s) => s.kind);
@@ -39,8 +38,7 @@ export default function WallpaperContrastSync() {
       root.dataset.wallpaperActive = 'true';
       root.setAttribute('data-wallpaper-tone', tone);
       root.dataset.wallpaperTone = tone;
-      applyThemeToDocument(colors, mode, themePresetId);
-      applyWallpaperContrastTokens(tone);
+      applyWallpaperContrastTokens(colors, mode);
     };
 
     if (kind === 'gradient') {

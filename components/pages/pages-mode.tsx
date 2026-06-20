@@ -11,6 +11,8 @@ import { NotebookView } from '@/components/pages/notebook-view';
 import { normalizePageFontId } from '@/lib/page-fonts';
 import type { PageContentJson } from '@/lib/types';
 import type { PageFontId } from '@/lib/page-fonts';
+import { exportPageToPdf } from '@/lib/pages-export-pdf';
+import { jsonToHtml, normalizePageContent } from '@/lib/pages-migrate-client';
 import '@/components/pages/pages-editor.css';
 
 const PageEditor = dynamic(
@@ -30,6 +32,8 @@ export default function PagesMode() {
   const [editorFocused, setEditorFocused] = useState(false);
   const [titleFocused, setTitleFocused] = useState(false);
   const [editorInstance, setEditorInstance] = useState<import('@tiptap/core').Editor | null>(null);
+  const [exportPdfBusy, setExportPdfBusy] = useState(false);
+  const [exportPdfError, setExportPdfError] = useState<string | null>(null);
   const saveTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleContentUpdate = useCallback(
@@ -69,6 +73,32 @@ export default function PagesMode() {
   const titleDimmed = editorFocused && !titleFocused;
   const pageFont = normalizePageFontId(activePage.fontFamily);
 
+  const handleExportPdf = useCallback(
+    async (options: { watermark?: boolean } = { watermark: true }) => {
+      if (!activePage || exportPdfBusy) return;
+
+      setExportPdfBusy(true);
+      setExportPdfError(null);
+      try {
+        const html = editorInstance
+          ? jsonToHtml(editorInstance.getJSON() as PageContentJson)
+          : jsonToHtml(normalizePageContent(activePage));
+
+        await exportPageToPdf({
+          title: activePage.title,
+          html,
+          fontFamily: pageFont,
+          watermark: options.watermark ?? true,
+        });
+      } catch {
+        setExportPdfError('PDF export failed. Try again.');
+      } finally {
+        setExportPdfBusy(false);
+      }
+    },
+    [activePage, editorInstance, exportPdfBusy, pageFont]
+  );
+
   const editorNode = (
     <PageEditor
       key={activePage.id}
@@ -102,7 +132,14 @@ export default function PagesMode() {
           onShowLineNumbersChange={(showLineNumbers) =>
             updatePage(activePage.id, { showLineNumbers })
           }
+          onExportPdf={(options) => void handleExportPdf(options)}
+          exportPdfBusy={exportPdfBusy}
         />
+        {exportPdfError ? (
+          <p className="page-export-error" role="alert">
+            {exportPdfError}
+          </p>
+        ) : null}
         <div
           className={[
             'page-editor-shell',

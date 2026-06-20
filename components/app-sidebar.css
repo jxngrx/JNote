@@ -382,7 +382,7 @@
   position: fixed;
   inset: 0;
   z-index: calc(var(--z-sticky) + 1);
-  background: color-mix(in srgb, var(--bg) 25%, rgba(0, 0, 0, 0.45));
+  background: color-mix(in srgb, var(--bg) 40%, var(--ui-scrim-heavy));
   backdrop-filter: blur(2px);
   animation: appSidebarBackdropIn 0.2s ease;
 }

@@ -34,6 +34,8 @@ export type MagneticDockItemData = {
   label: string;
   icon: ReactNode;
   onClick?: () => void;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
   onContextMenu?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   isActive?: boolean;
   badge?: number;
@@ -319,8 +321,14 @@ function MagneticDockItem({
         onPointerMove={onReorderPointerMove}
         onPointerUp={onReorderPointerUp}
         onPointerCancel={onReorderPointerUp}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        onMouseEnter={() => {
+          setIsHovered(true);
+          item.onMouseEnter?.();
+        }}
+        onMouseLeave={() => {
+          setIsHovered(false);
+          item.onMouseLeave?.();
+        }}
         onFocus={() => setIsHovered(true)}
         onBlur={() => setIsHovered(false)}
         aria-label={item.label}
